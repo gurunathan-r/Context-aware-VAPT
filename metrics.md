@@ -161,5 +161,13 @@ To turn trivial baselines into real measurements, stand up a small local lab:
 - Ablation arm (context-blind) is a two-line change: call `run_recon` with
   retrieval forced to `[]` (a `context_enabled=False` flag), everything else
   identical — this is what makes R-metrics fair.
-- Suggested tooling next step: `scripts/eval_recon.py` that runs N scenarios ×
-  2 arms and emits the metrics table above into `results/`.
+- **Implemented** — `src/eval.py` now implements `snapshot_target()` +
+  `compute_metrics()` (A1–A5, B1–B5, C1–C7, D1–D4, E1–E5, R1–R6) and
+  `scripts/eval_recon.py` is the CLI that runs N scenarios × 2 arms (aware /
+  blind via `ReconAgent(context_enabled=...)`) against a ground-truth profile
+  and emits the metrics table into `results/recon_eval_<timestamp>.json`.
+  See `metrics.md` §R and `metrics.md` "Ground-truth lab requirement" for the
+  profile schema; a starter offline profile ships at
+  `results/ground_truth_testbed.json`. Metrics whose inputs (live listeners,
+  published intel, LLM judge) are absent on a given run degrade to `None`
+  ("n/a") rather than producing fake zeros.

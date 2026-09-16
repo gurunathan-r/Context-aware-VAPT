@@ -123,7 +123,7 @@ against 10.0.1.5 using the organizational context above..."""
 ## Run tests
 
 ```bash
-pytest tests/ -v        # 108 tests, fully offline (LLM + network stubbed/isolated)
+pytest tests/ -v        # 119 tests, fully offline (LLM + network stubbed/isolated)
 ```
 
 ## Evaluation metrics
