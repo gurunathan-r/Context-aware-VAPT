@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Context-Aware Agentic AI Framework for Automated VAPT
 
 Organizational-RAG-driven, multi-agent VAPT research platform. Fully local:
@@ -179,3 +180,6 @@ pip install -r requirements.txt
 - **Recon probes are TCP-connect only** — no service fingerprinting, no
   vulnerability detection yet (by design for Phase 2 start).
 - **Single-tenant** — no multi-tenancy or retrieval access-control layer.
+=======
+# Context-aware-VAPT
+>>>>>>> origin/main
