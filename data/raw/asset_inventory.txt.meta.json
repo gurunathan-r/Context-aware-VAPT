@@ -1,0 +1,8 @@
+{
+  "source_type": "asset",
+  "business_unit": "unknown",
+  "asset_criticality": "high",
+  "compliance_scope": "none",
+  "authority_level": "informational",
+  "source_file": "asset_inventory.txt"
+}

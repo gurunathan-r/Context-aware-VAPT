@@ -1,0 +1,32 @@
+[
+  {
+    "query": "What are the compliance requirements for payment systems?",
+    "filters": null,
+    "expected_source_files": ["payment_policy.txt"],
+    "expected_keywords": ["PCI-DSS", "cardholder"]
+  },
+  {
+    "query": "Business criticality of asset 10.0.1.5",
+    "filters": {"source_type": "asset"},
+    "expected_source_files": ["asset_inventory.txt"],
+    "expected_keywords": ["payment gateway", "high"]
+  },
+  {
+    "query": "Firewall restrictions on DMZ access",
+    "filters": {"source_type": "topology"},
+    "expected_source_files": ["network_topology.txt"],
+    "expected_keywords": ["DMZ", "FW-014"]
+  },
+  {
+    "query": "Where is the HR database located and who can reach it?",
+    "filters": {"source_type": "topology"},
+    "expected_source_files": ["network_topology.txt"],
+    "expected_keywords": ["10.0.3.20", "HR"]
+  },
+  {
+    "query": "How often are high criticality assets patched?",
+    "filters": null,
+    "expected_source_files": ["asset_inventory.txt"],
+    "expected_keywords": ["weekly"]
+  }
+]

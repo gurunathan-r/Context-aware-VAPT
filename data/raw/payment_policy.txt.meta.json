@@ -1,0 +1,8 @@
+{
+  "source_type": "policy",
+  "business_unit": "finance",
+  "asset_criticality": "high",
+  "compliance_scope": "PCI-DSS",
+  "authority_level": "mandatory",
+  "source_file": "payment_policy.txt"
+}

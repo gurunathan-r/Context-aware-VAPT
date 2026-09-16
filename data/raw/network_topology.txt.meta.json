@@ -1,0 +1,8 @@
+{
+  "source_type": "topology",
+  "business_unit": "engineering",
+  "asset_criticality": "medium",
+  "compliance_scope": "none",
+  "authority_level": "advisory",
+  "source_file": "network_topology.txt"
+}

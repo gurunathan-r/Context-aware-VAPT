@@ -1,0 +1,23 @@
+{
+  "10.0.1.5": {
+    "role": "Payment gateway",
+    "criticality": "high",
+    "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
+    "expert_ports": [443, 22, 80],
+    "listening_ports": []
+  },
+  "10.0.2.10": {
+    "role": "Internal wiki",
+    "criticality": "low",
+    "expected_sources": ["asset_inventory.txt"],
+    "expert_ports": [80, 443],
+    "listening_ports": []
+  },
+  "10.0.3.20": {
+    "role": "HR database",
+    "criticality": "medium",
+    "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
+    "expert_ports": [1433, 3389],
+    "listening_ports": []
+  }
+}

@@ -1,0 +1,24 @@
+Corporate Asset Inventory — Q3 Snapshot
+
+ASSET 10.0.1.5
+Role: Payment gateway (cardholder data processing)
+Business unit: finance
+Operating system: Ubuntu 22.04 LTS
+Exposure: internet-facing via DMZ proxy
+Criticality: high — outage directly blocks revenue and triggers PCI-DSS reporting obligations.
+
+ASSET 10.0.2.10
+Role: Internal wiki (Confluence instance)
+Business unit: engineering
+Operating system: Debian 12
+Exposure: internal network only
+Criticality: low — convenience documentation service; data is reproducible from version control.
+
+ASSET 10.0.3.20
+Role: HR database (personnel records, payroll data)
+Business unit: hr
+Operating system: Windows Server 2019
+Exposure: internal network only, HR subnet
+Criticality: medium — contains personal data subject to GDPR; compromise has regulatory and reputational impact but does not block revenue.
+
+Ownership: Each asset has a named owner in the CMDB. Patching cadence: high-criticality assets weekly, medium monthly, low quarterly.
