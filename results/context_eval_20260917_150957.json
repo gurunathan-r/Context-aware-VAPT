@@ -1,0 +1,54 @@
+{
+  "dataset_size": 5,
+  "M1_ranking_alignment": {
+    "spearman_rho": {
+      "blind": -0.9,
+      "aware": 1.0
+    },
+    "kendall_tau": {
+      "blind": -0.8,
+      "aware": 1.0
+    },
+    "ndcg_at_3": {
+      "blind": 0.4169,
+      "aware": 1.0
+    }
+  },
+  "M2_dead_end_detection": {
+    "precision": {
+      "blind": 0.0,
+      "aware": 1.0
+    },
+    "recall": {
+      "blind": 0.0,
+      "aware": 1.0
+    },
+    "f1": {
+      "blind": 0.0,
+      "aware": 1.0
+    }
+  },
+  "M3_false_urgency_reduction_pct": {
+    "blind": 0.0,
+    "aware": 50.0
+  },
+  "M4_compliance_sla_alignment_pct": {
+    "blind": 0.0,
+    "aware": 100.0
+  },
+  "M5_context_grounding_citation_pct": {
+    "blind": 0.0,
+    "aware": 100.0
+  },
+  "M6_actionable_remediation_precision_top3_pct": {
+    "blind": 0.0,
+    "aware": 66.7
+  },
+  "summary": {
+    "rank_correlation_delta": 1.9,
+    "dead_ends_detected": 2,
+    "alert_fatigue_reduction_pct": 50.0,
+    "top3_actionable_improvement_pct": 66.7
+  },
+  "generated_utc": "2026-09-17T15:09:57.554227+00:00"
+}

@@ -1,0 +1,48 @@
+{
+  "generated_utc": "2026-09-17T14:57:13.977984",
+  "targets": [
+    "10.0.1.5",
+    "10.0.3.20",
+    "10.0.2.10"
+  ],
+  "probe": false,
+  "ground_truth_file": "results/ground_truth_testbed.json",
+  "arms": [
+    "aware",
+    "blind"
+  ],
+  "metrics": {
+    "A1 context_hit_rate": 1.0,
+    "A2 correct_source_rate": 1.0,
+    "A3 context_precision": 0.37,
+    "A4 role_correctness": 1.0,
+    "A5 context_latency_ms": 3066.724,
+    "B1 plan_precision": 0.4,
+    "B2 plan_recall": 0.833,
+    "B3 plan_order_correlation": -0.009,
+    "B4 context_sensitivity": 1.0,
+    "B5 planned_ports_per_target": 5,
+    "C1 probe_coverage": null,
+    "C2 port_state_accuracy": null,
+    "C3 false_open_rate": null,
+    "C4 false_closed_rate": null,
+    "C5 probe_wall_time_ms": null,
+    "C6 guardrail_violations": 0,
+    "C7 probe_footprint": 0,
+    "D1 finding_completeness": null,
+    "D2 schema_validity": null,
+    "D3 finding_validity": null,
+    "D4 traceability": null,
+    "E1 publish_success": null,
+    "E2 intel_retrievability": null,
+    "E3 self_knowledge_gain": null,
+    "E4 index_growth_chunks": null,
+    "E5 idempotency_errors": null,
+    "R1 plan_difference_rate": 1.0,
+    "R2 recall_delta_aware": 0.0,
+    "R3 wasted_probe_delta": 0.0,
+    "R4 risk_weighted_yield_delta": null,
+    "R5 narrative_quality": null,
+    "R6 consistency": null
+  }
+}

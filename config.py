@@ -9,6 +9,7 @@ pathlib, so commands work from any CWD:
     python -m pytest tests/ -v
 """
 
+import os
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -88,14 +89,17 @@ COMPLIANCE_SCOPES = ["PCI-DSS", "GDPR", "none"]
 METADATA_NULL_SUBSTITUTE: str = "unknown"
 
 # ---------------------------------------------------------------------------
-# Generation (the "G" in RAG) — a local LLM behind an OpenAI-compatible API.
+# Generation (the "G" in RAG) — Pluggable LLM behind an OpenAI-compatible API.
 # ---------------------------------------------------------------------------
-# Default backend: LM Studio (`lms server start`, then load a model). Any
-# OpenAI-compatible local server works unchanged (LM Studio, llama.cpp
-# server, vLLM, Ollama's /v1 endpoint, ...). No cloud, no API keys.
-LLM_BASE_URL: str = "http://localhost:1234/v1"
-LLM_MODEL: str = "qwythos-9b"          # smallest local model; override via --model
-LLM_TEMPERATURE: float = 0.2           # low temperature for factual, grounded answers
-LLM_MAX_TOKENS: int = 1024
-LLM_TIMEOUT_SECONDS: float = 120.0     # local models can be slow on CPU
+# Works with any OpenAI-compatible backend:
+#   - Ollama (default): http://localhost:11434/v1, model qwen3.5:9b-q4_K_M
+#   - LM Studio:        http://localhost:1234/v1
+#   - vLLM / llama.cpp / Cloud APIs (Gemini, OpenAI, etc.)
+# All parameters can be overridden via environment variables or CLI arguments.
+LLM_BASE_URL: str = os.getenv("LLM_BASE_URL", "http://localhost:11434/v1")
+LLM_MODEL: str = os.getenv("LLM_MODEL", "qwen3.5:9b-q4_K_M")
+LLM_API_KEY: str = os.getenv("LLM_API_KEY", "")
+LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.1"))
+LLM_MAX_TOKENS: int = int(os.getenv("LLM_MAX_TOKENS", "2048"))
+LLM_TIMEOUT_SECONDS: float = float(os.getenv("LLM_TIMEOUT_SECONDS", "180.0"))
 RAG_TOP_K: int = TOP_K_DEFAULT         # chunks retrieved to build the context block

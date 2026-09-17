@@ -1,0 +1,73 @@
+[
+  {
+    "id": "VULN-001",
+    "cve": "CVE-2021-44228",
+    "title": "Apache Log4j Remote Code Execution (Log4Shell)",
+    "target": "10.0.2.10",
+    "port": 80,
+    "service": "http",
+    "cvss_score": 9.8,
+    "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+    "severity": "CRITICAL",
+    "description": "Unauthenticated remote code execution via JNDI lookup in Confluence wiki backend.",
+    "attack_vector": "Network",
+    "assumed_origin": "Internal network"
+  },
+  {
+    "id": "VULN-002",
+    "cve": "CVE-2023-38606",
+    "title": "Payment Gateway SQL Injection & Authentication Bypass",
+    "target": "10.0.1.5",
+    "port": 443,
+    "service": "https",
+    "cvss_score": 7.5,
+    "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+    "severity": "HIGH",
+    "description": "SQL injection flaw in cardholder data query endpoint allows authentication bypass and extraction of transaction records.",
+    "attack_vector": "Network",
+    "assumed_origin": "Internet via DMZ proxy"
+  },
+  {
+    "id": "VULN-003",
+    "cve": "CVE-2022-26134",
+    "title": "Unauthenticated Admin Management Console RCE",
+    "target": "10.0.1.5",
+    "port": 8080,
+    "service": "http-admin",
+    "cvss_score": 9.8,
+    "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+    "severity": "CRITICAL",
+    "description": "Remote code execution flaw in debug management console listening on internal port 8080.",
+    "attack_vector": "Adjacent",
+    "assumed_origin": "Internal segment (lateral movement from wiki 10.0.2.10)"
+  },
+  {
+    "id": "VULN-004",
+    "cve": "CVE-2023-24329",
+    "title": "HR Personnel Database Cleartext Credential & Data Exposure",
+    "target": "10.0.3.20",
+    "port": 1433,
+    "service": "ms-sql-s",
+    "cvss_score": 6.5,
+    "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+    "severity": "MEDIUM",
+    "description": "Database information disclosure exposes unencrypted employee PII, salary history, and HR records.",
+    "attack_vector": "Network",
+    "assumed_origin": "HR subnet"
+  },
+  {
+    "id": "VULN-005",
+    "cve": "CVE-2020-0796",
+    "title": "SMBv3 Compression Remote Code Execution (SMBGhost)",
+    "target": "10.0.3.20",
+    "port": 445,
+    "service": "microsoft-ds",
+    "cvss_score": 10.0,
+    "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+    "severity": "CRITICAL",
+    "description": "Buffer overflow in SMBv3 decompression routine allows unauthenticated remote code execution.",
+    "attack_vector": "Network",
+    "assumed_origin": "General internal segment"
+  }
+]
+

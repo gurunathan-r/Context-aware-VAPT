@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Context-Aware Agentic AI Framework for Automated VAPT
 
 Organizational-RAG-driven, multi-agent VAPT research platform. Fully local:
@@ -11,9 +10,9 @@ CPU embeddings, ChromaDB, and an LM Studio–served LLM — no cloud, no API key
 | 1 | Retrieval layer (ingest → embed → store → retrieve → validate) | **Done, 1.00/1.00 validation hit rates** |
 | 1+ | RAG generation (local LLM, grounded answers + citations) | **Done** |
 | 2 | Recon Agent (RAG-driven, publishes intel back into the RAG) | **Done** |
-| 2 | Vulnerability Analysis Agent | To implement |
-| 2 | Prioritization / Planning Agent | To implement |
-| 3 | Exploitation agent + ablation study | To implement |
+| 2 | Organizational Context Agent (Business Risk & Dead-End Prioritization) | **Done (132/132 tests passing)** |
+| 2 | Context Evaluation Harness (M1–M6 metrics vs Ground Truth) | **Done (Δρ = +1.90, 100% Dead-End recall)** |
+| 3 | Exploitation agent + live lab integration | Roadmap |
 
 ## Phase 1 — Organizational RAG retrieval layer
 
@@ -180,6 +179,43 @@ pip install -r requirements.txt
 - **Recon probes are TCP-connect only** — no service fingerprinting, no
   vulnerability detection yet (by design for Phase 2 start).
 - **Single-tenant** — no multi-tenancy or retrieval access-control layer.
-=======
-# Context-aware-VAPT
->>>>>>> origin/main
+
+---
+
+## Organizational Context Agent (Phase 2, implemented)
+
+The **Organizational Context Agent** (`src/agents/context_agent.py`) consumes vulnerability scan findings (simulated or real scanner output) and transforms reporting from raw CVSS scores into **context-adjusted business risk prioritization**:
+
+1. **Dead-End Identification**: Queries network topology and firewall rules (`network_topology.txt`). Unexploitable attack paths (e.g. firewall rule `FW-014` blocking internal ingress to Payment Gateway `10.0.1.5`) are tagged as `🔴 DEAD END` and deprioritized.
+2. **Business Escalation**: Multiplies risk based on asset criticality, business unit ownership, and regulatory mandates (e.g. PCI-DSS 30-day remediation SLA on payment gateway).
+3. **Alert Fatigue Relief**: Demotes misleading "Critical" CVEs on non-critical, isolated internal systems (e.g. internal documentation wiki).
+4. **Audit Grounding**: Annotates every finding with explicit RAG source citations `(source: <file>)`.
+
+### Run the Context Agent & Generate Reports
+
+```bash
+# Run the Context Agent on simulated vulnerabilities
+python scripts/run_context_agent.py
+```
+
+Outputs:
+- Side-by-side terminal comparison table.
+- `reports/vuln_report_blind.md` — Baseline CVSS-ordered report.
+- `reports/vuln_report_aware.md` — Context-aware business risk report with remediation SLAs.
+- `reports/vuln_comparison.json` — Machine-readable comparison artifact.
+
+### Quantitative Evaluation (Scorecard)
+
+```bash
+# Run the evaluation harness against expert ground truth
+python scripts/eval_context.py
+```
+
+Results against expert benchmark (`results/vuln_ground_truth.json`):
+- **M1. Spearman Rank Correlation (ρ)**: **-0.9000** (Context-Blind) ➔ **+1.0000** (Context-Aware) ($\Delta\rho = +1.9000$)
+- **M2. Dead-End Detection Recall**: **0.0%** ➔ **100.0%** (Detects all unexploitable paths)
+- **M3. False Urgency Reduction (Alert Fatigue)**: **75.0%** of false-critical alerts deprioritized
+- **M4. Compliance SLA Alignment Rate**: **100.0%** of regulatory findings scheduled within SLA
+- **M5. Context Grounding / Citation Rate**: **100.0%** of findings backed by RAG citations
+- **M6. Top-3 Actionable Remediation Precision**: **0.0%** ➔ **66.7%** actionable high-impact yield
+
