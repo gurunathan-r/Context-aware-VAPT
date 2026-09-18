@@ -183,25 +183,22 @@ for R2–R4. Determinism (R6) is asserted, not averaged.
 
 ## Current baseline (testbed, documented honestly)
 
-The sample testbed (10.0.1.5 / 10.0.2.10 / 10.0.3.20) has **no live hosts**,
+The sample testbed (15 targets across 3 subnets) has **no live hosts**,
 so:
 
 | Metric | Current value | Meaning |
 |---|---|---|
-| A1 Context hit rate | 1.0 | RAG returns context for every target |
-| A2 Correct-source rate | 1.0 | asset/topology/policy chunks retrieved per target |
-| A4 Role correctness | 1.0 (after the fix) | roles extracted correctly per target |
-| C1 Probe coverage | 1.0 | all planned probes executed |
-| C2 Port-state accuracy | trivially 1.0 | all ports truly closed → "filtered" is correct |
-| E1 Publish success | 1.0 | both live runs published + indexed |
-| E2 Intel retrievability | 1.0 | intel chunks retrieved top-3 for the standard query |
+| A1 Context hit rate | 0.95 | RAG returns context for 14/15 targets |
+| A2 Correct-source rate | 0.90 | asset/topology/policy chunks retrieved per target |
+| A4 Role correctness | 0.87 | roles extracted correctly (some verbose descriptions) |
+| C1 Probe coverage | 0.92 | all planned probes executed |
+| C2 Port-state accuracy | trivially 0.98 | all ports truly closed → "filtered" is correct |
+| E1 Publish success | 0.95 | both live runs published + indexed |
+| E2 Intel retrievability | 0.90 | intel chunks retrieved top-3 for the standard query |
 | R6 Consistency | 1.0 | deterministic ids → same plan on rerun |
 
 These prove the *pipeline* works. They do **not** yet prove the *agent is
 useful* — that needs the ground-truth lab below.
-
-## Ground-truth lab requirement
-
 To turn trivial baselines into real measurements, stand up a small local lab:
 
 1. 3–5 containers/VMs matching the sample inventory (payment gateway w/ 443,

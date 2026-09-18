@@ -46,7 +46,11 @@ SECURITY_TXT_TIMEOUT: float = 10.0  # seconds per HTTP attempt
 SCOPE_USER_AGENT: str = "org-rag-vapt-recon/0.1 (local research; RFC 9116 security.txt)"
 
 # Default recon targets when none are passed on the CLI.
-RECON_DEFAULT_TARGETS: list[str] = ["10.0.1.5", "10.0.3.20", "10.0.2.10"]
+RECON_DEFAULT_TARGETS: list[str] = [
+    "10.0.1.5", "10.0.2.10", "10.0.3.20", "10.0.4.30", "10.0.5.40",
+    "10.0.6.50", "10.0.7.60", "10.0.8.70", "10.0.9.80", "10.0.10.90",
+    "10.0.11.100", "10.0.12.110", "10.0.13.120", "10.0.14.130", "10.0.15.140"
+]
 
 # ---------------------------------------------------------------------------
 # Embedding model (CPU-only, fully local — no external API calls)

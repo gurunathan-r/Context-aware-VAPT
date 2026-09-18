@@ -21,4 +21,88 @@ Operating system: Windows Server 2019
 Exposure: internal network only, HR subnet
 Criticality: medium — contains personal data subject to GDPR; compromise has regulatory and reputational impact but does not block revenue.
 
+ASSET 10.0.4.30
+Role: Web application server (customer portal)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internet-facing via DMZ proxy
+Criticality: high — customer-facing, outage affects user experience and revenue.
+
+ASSET 10.0.5.40
+Role: Mail server (Exchange)
+Business unit: finance
+Operating system: Windows Server 2019
+Exposure: internet-facing
+Criticality: medium — handles all internal/external email; data privacy concerns.
+
+ASSET 10.0.6.50
+Role: File storage server (NAS)
+Business unit: engineering
+Operating system: CentOS 8
+Exposure: internal network only
+Criticality: medium — stores shared project files; backup and access control critical.
+
+ASSET 10.0.7.60
+Role: Monitoring server (Nagios/Prometheus)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internal network only
+Criticality: low — infrastructure visibility, no direct business data.
+
+ASSET 10.0.8.70
+Role: Development server (Jenkins/GitLab)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internal network only
+Criticality: low — build/deployment system; code stored in version control.
+
+ASSET 10.0.9.80
+Role: Backup server (Veeam)
+Business unit: engineering
+Operating system: Windows Server 2019
+Exposure: internal network only
+Criticality: medium — stores all backups; disaster recovery critical.
+
+ASSET 10.0.10.90
+Role: Database server (PostgreSQL)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internal network only
+Criticality: high — contains customer and application data.
+
+ASSET 10.0.11.100
+Role: API gateway (Kong)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internet-facing via DMZ proxy
+Criticality: high — all external API traffic passes through.
+
+ASSET 10.0.12.110
+Role: CI/CD server (GitLab CI)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internal network only
+Criticality: medium — deployment pipeline; compromise could lead to malicious code.
+
+ASSET 10.0.13.120
+Role: Logging server (ELK Stack)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internal network only
+Criticality: low — central log aggregation; audit trail.
+
+ASSET 10.0.14.130
+Role: VPN concentrator (Palo Alto)
+Business unit: engineering
+Operating system: PAN-OS
+Exposure: internet-facing
+Criticality: high — remote access entry point; privileged access.
+
+ASSET 10.0.15.140
+Role: Proxy server (Squid)
+Business unit: engineering
+Operating system: Ubuntu 22.04 LTS
+Exposure: internal network only
+Criticality: medium — web traffic filtering and logging.
+
 Ownership: Each asset has a named owner in the CMDB. Patching cadence: high-criticality assets weekly, medium monthly, low quarterly.

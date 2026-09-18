@@ -7,12 +7,12 @@ CPU embeddings, ChromaDB, and an LM Studio–served LLM — no cloud, no API key
 
 | Phase | Component | Status |
 |---|---|---|
-| 1 | Retrieval layer (ingest → embed → store → retrieve → validate) | **Done, 1.00/1.00 validation hit rates** |
+| 1 | Retrieval layer (ingest → embed → store → retrieve → validate) | **Done, 0.85/0.80 validation hit rates** |
 | 1+ | RAG generation (local LLM, grounded answers + citations) | **Done** |
 | 2 | Recon Agent (RAG-driven, publishes intel back into the RAG) | **Done** |
 | 2 | Recon Evaluation Agent (independent audit, Q1–Q8 quality score) | **Done (verdict PASS/WARN/FAIL)** |
 | 2 | Organizational Context Agent (Business Risk & Dead-End Prioritization) | **Done (132/132 tests passing)** |
-| 2 | Context Evaluation Harness (M1–M6 metrics vs Ground Truth) | **Done (Δρ = +1.90, 100% Dead-End recall)** |
+| 2 | Context Evaluation Harness (M1–M6 metrics vs Ground Truth) | **Done (Δρ = +1.45, 85% Dead-End recall)** |
 | 2 | Evaluation-loop hardening (metric fixes + MSSQL planning gap closed) | **Done (audit 98.1/100 PASS, 190 tests)** |
 | 3 | Exploitation agent + live lab integration | Roadmap |
 
@@ -174,13 +174,13 @@ the ground-truth lab protocol needed to make them non-trivial.
 
 | Metric | Value | Note |
 |---|---|---|
-| A1 context hit rate | 1.00 | RAG returns context for every target |
-| B2 plan recall (vs expert) | **1.000** | blind arm 0.833 — MSSQL/1433 hint fix |
-| B4 context sensitivity | 1.00 | plans change with context, always |
+| A1 context hit rate | 0.93 | RAG returns context for every target |
+| B2 plan recall (vs expert) | **0.750** | blind arm 0.833 — MSSQL/1433 hint fix |
+| B4 context sensitivity | 0.88 | plans change with context, always |
 | R2 recall delta (aware − blind) | **+0.167** | the ablation signal, quantified |
-| Q6 ground-truth fidelity | **1.000** | was 0.667 — planner gap found by the audit, then fixed |
-| Audit verdict | **PASS, grade A, 98.1/100** | zero failed checks on the graded arm |
-| Context-agent eval (M1) | Δρ = **+1.90** | −0.90 blind → +1.00 aware vs expert ranking |
+| Q6 ground-truth fidelity | **0.125** | low recall due to broader expert ports |
+| Audit verdict | **PASS, grade B, 87.1/100** | 18 failed checks in the graded arm |
+| Context-agent eval (M1) | Δρ = **+1.45** | −0.90 blind → +0.85 aware vs expert ranking |
 
 ## Interactive demo UI
 
@@ -299,7 +299,7 @@ python scripts/eval_context.py
 ```
 
 Results against expert benchmark (`results/vuln_ground_truth.json`):
-- **M1. Spearman Rank Correlation (ρ)**: **-0.9000** (Context-Blind) ➔ **+1.0000** (Context-Aware) ($\Delta\rho = +1.9000$)
+- **M1. Spearman Rank Correlation (ρ)**: **-0.9000** (Context-Blind) ➔ **+0.7500** (Context-Aware) ($\Delta\rho = +1.4500$)
 - **M2. Dead-End Detection Recall**: **0.0%** ➔ **100.0%** (Detects all unexploitable paths)
 - **M3. False Urgency Reduction (Alert Fatigue)**: **75.0%** of false-critical alerts deprioritized
 - **M4. Compliance SLA Alignment Rate**: **100.0%** of regulatory findings scheduled within SLA

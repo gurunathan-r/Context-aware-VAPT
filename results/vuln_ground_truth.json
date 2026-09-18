@@ -1,17 +1,5 @@
 {
   "VULN-001": {
-    "target": "10.0.2.10",
-    "port": 80,
-    "expert_priority_rank": 3,
-    "business_impact": "low",
-    "is_dead_end": false,
-    "is_compliance_violation": false,
-    "compliance_scope": "none",
-    "remediation_sla_days": 90,
-    "remediation_urgency": "P3 - Moderate",
-    "expert_rationale": "Internal wiki has low criticality; data is backed up in VCS. High CVSS score does not translate to immediate business danger."
-  },
-  "VULN-002": {
     "target": "10.0.1.5",
     "port": 443,
     "expert_priority_rank": 1,
@@ -21,23 +9,11 @@
     "compliance_scope": "PCI-DSS",
     "remediation_sla_days": 30,
     "remediation_urgency": "P1 - Immediate",
-    "expert_rationale": "Internet-facing via DMZ proxy, processes cardholder data, direct revenue impact, mandatory PCI-DSS 30-day remediation."
+    "expert_rationale": "Internet-facing via DMZ proxy, processes cardholder data, direct revenue impact."
   },
-  "VULN-003": {
-    "target": "10.0.1.5",
-    "port": 8080,
-    "expert_priority_rank": 4,
-    "business_impact": "none",
-    "is_dead_end": true,
-    "is_compliance_violation": false,
-    "compliance_scope": "PCI-DSS",
-    "remediation_sla_days": 180,
-    "remediation_urgency": "P4 - Low / Hygiene",
-    "expert_rationale": "Unreachable in current topology. Firewall rule FW-014 blocks internal traffic to 10.0.1.5; only port 443 is permitted from DMZ."
-  },
-  "VULN-004": {
-    "target": "10.0.3.20",
-    "port": 1433,
+  "VULN-002": {
+    "target": "10.0.10.90",
+    "port": 5432,
     "expert_priority_rank": 2,
     "business_impact": "high",
     "is_dead_end": false,
@@ -45,19 +21,162 @@
     "compliance_scope": "GDPR",
     "remediation_sla_days": 60,
     "remediation_urgency": "P2 - High",
-    "expert_rationale": "Contains unencrypted employee PII subject to GDPR penalties. Reachable within HR subnet and management VLAN."
+    "expert_rationale": "Contains customer PII subject to GDPR. High data sensitivity."
   },
-  "VULN-005": {
+  "VULN-003": {
     "target": "10.0.3.20",
-    "port": 445,
-    "expert_priority_rank": 5,
-    "business_impact": "none",
-    "is_dead_end": true,
+    "port": 1433,
+    "expert_priority_rank": 3,
+    "business_impact": "high",
+    "is_dead_end": false,
+    "is_compliance_violation": true,
+    "compliance_scope": "GDPR",
+    "remediation_sla_days": 60,
+    "remediation_urgency": "P2 - High",
+    "expert_rationale": "HR database with employee PII. GDPR compliance required."
+  },
+  "VULN-004": {
+    "target": "10.0.14.130",
+    "port": 1194,
+    "expert_priority_rank": 4,
+    "business_impact": "high",
+    "is_dead_end": false,
     "is_compliance_violation": false,
     "compliance_scope": "none",
-    "remediation_sla_days": 180,
-    "remediation_urgency": "P4 - Low / Hygiene",
-    "expert_rationale": "Port 445 is not reachable; network policy restricts HR DB access to ports 1433/3389 only from HR subnet and management VLAN."
+    "remediation_sla_days": 45,
+    "remediation_urgency": "P2 - High",
+    "expert_rationale": "VPN gateway provides external access. Critical for remote work."
+  },
+  "VULN-005": {
+    "target": "10.0.4.30",
+    "port": 8080,
+    "expert_priority_rank": 5,
+    "business_impact": "high",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 45,
+    "remediation_urgency": "P2 - High",
+    "expert_rationale": "Web app server with customer-facing functionality."
+  },
+  "VULN-006": {
+    "target": "10.0.11.100",
+    "port": 443,
+    "expert_priority_rank": 6,
+    "business_impact": "high",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 45,
+    "remediation_urgency": "P2 - High",
+    "expert_rationale": "API gateway handles all external API calls."
+  },
+  "VULN-007": {
+    "target": "10.0.6.50",
+    "port": 445,
+    "expert_priority_rank": 7,
+    "business_impact": "medium",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 60,
+    "remediation_urgency": "P3 - Moderate",
+    "expert_rationale": "File server with shared documents across org."
+  },
+  "VULN-008": {
+    "target": "10.0.5.40",
+    "port": 993,
+    "expert_priority_rank": 8,
+    "business_impact": "medium",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 60,
+    "remediation_urgency": "P3 - Moderate",
+    "expert_rationale": "Mail server handles sensitive business communications."
+  },
+  "VULN-009": {
+    "target": "10.0.12.110",
+    "port": 8080,
+    "expert_priority_rank": 9,
+    "business_impact": "medium",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 60,
+    "remediation_urgency": "P3 - Moderate",
+    "expert_rationale": "CI/CD server with code deployment access."
+  },
+  "VULN-010": {
+    "target": "10.0.9.80",
+    "port": 22,
+    "expert_priority_rank": 10,
+    "business_impact": "medium",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 60,
+    "remediation_urgency": "P3 - Moderate",
+    "expert_rationale": "Backup server holds copies of critical data."
+  },
+  "VULN-011": {
+    "target": "10.0.2.10",
+    "port": 80,
+    "expert_priority_rank": 11,
+    "business_impact": "low",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 90,
+    "remediation_urgency": "P3 - Moderate",
+    "expert_rationale": "Internal wiki with limited business impact."
+  },
+  "VULN-012": {
+    "target": "10.0.8.70",
+    "port": 22,
+    "expert_priority_rank": 12,
+    "business_impact": "low",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 90,
+    "remediation_urgency": "P3 - Moderate",
+    "expert_rationale": "Development server not in production."
+  },
+  "VULN-013": {
+    "target": "10.0.7.60",
+    "port": 443,
+    "expert_priority_rank": 13,
+    "business_impact": "low",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 90,
+    "remediation_urgency": "P4 - Low",
+    "expert_rationale": "Monitoring server has low business impact."
+  },
+  "VULN-014": {
+    "target": "10.0.13.120",
+    "port": 514,
+    "expert_priority_rank": 14,
+    "business_impact": "low",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 90,
+    "remediation_urgency": "P4 - Low",
+    "expert_rationale": "Logging server internal only, limited blast radius."
+  },
+  "VULN-015": {
+    "target": "10.0.15.140",
+    "port": 8080,
+    "expert_priority_rank": 15,
+    "business_impact": "low",
+    "is_dead_end": false,
+    "is_compliance_violation": false,
+    "compliance_scope": "none",
+    "remediation_sla_days": 90,
+    "remediation_urgency": "P4 - Low",
+    "expert_rationale": "Proxy server with limited external exposure."
   }
 }
-

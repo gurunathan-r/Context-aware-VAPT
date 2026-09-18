@@ -3,21 +3,105 @@
     "role": "Payment gateway",
     "criticality": "high",
     "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
-    "expert_ports": [443, 22, 80],
-    "listening_ports": []
+    "expert_ports": [443, 22, 1433, 3389, 80, 8443, 8080, 9000],
+    "listening_ports": [443]
   },
   "10.0.2.10": {
     "role": "Internal wiki",
     "criticality": "low",
     "expected_sources": ["asset_inventory.txt"],
-    "expert_ports": [80, 443],
+    "expert_ports": [443, 22, 80, 8080, 3000, 9000],
     "listening_ports": []
   },
   "10.0.3.20": {
     "role": "HR database",
     "criticality": "medium",
     "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
-    "expert_ports": [1433, 3389],
+    "expert_ports": [443, 22, 1433, 3389, 80, 8443],
+    "listening_ports": []
+  },
+  "10.0.4.30": {
+    "role": "Web application server",
+    "criticality": "high",
+    "expected_sources": ["asset_inventory.txt", "app_inventory.md"],
+    "expert_ports": [443, 22, 80, 8080, 8443, 9000, 3000],
+    "listening_ports": []
+  },
+  "10.0.5.40": {
+    "role": "Mail server",
+    "criticality": "medium",
+    "expected_sources": ["asset_inventory.txt"],
+    "expert_ports": [443, 22, 25, 587, 993, 995, 110, 143],
+    "listening_ports": []
+  },
+  "10.0.6.50": {
+    "role": "File storage server",
+    "criticality": "medium",
+    "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
+    "expert_ports": [443, 22, 445, 139, 2049, 111],
+    "listening_ports": []
+  },
+  "10.0.7.60": {
+    "role": "Monitoring server",
+    "criticality": "low",
+    "expected_sources": ["asset_inventory.txt"],
+    "expert_ports": [443, 22, 9090, 3000, 8080, 9100],
+    "listening_ports": []
+  },
+  "10.0.8.70": {
+    "role": "Development server",
+    "criticality": "low",
+    "expected_sources": ["asset_inventory.txt", "dev_policy.md"],
+    "expert_ports": [443, 22, 80, 3000, 8080, 9090],
+    "listening_ports": []
+  },
+  "10.0.9.80": {
+    "role": "Backup server",
+    "criticality": "medium",
+    "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
+    "expert_ports": [443, 22, 873, 10001, 9100, 8080],
+    "listening_ports": []
+  },
+  "10.0.10.90": {
+    "role": "Database server",
+    "criticality": "high",
+    "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
+    "expert_ports": [443, 22, 5432, 8080, 9000],
+    "listening_ports": []
+  },
+  "10.0.11.100": {
+    "role": "API gateway",
+    "criticality": "high",
+    "expected_sources": ["asset_inventory.txt", "api_docs.md"],
+    "expert_ports": [443, 22, 8443, 9090, 8080, 6060],
+    "listening_ports": []
+  },
+  "10.0.12.110": {
+    "role": "CI/CD server",
+    "criticality": "medium",
+    "expected_sources": ["asset_inventory.txt"],
+    "expert_ports": [443, 22, 8080, 3000, 5000],
+    "listening_ports": []
+  },
+  "10.0.13.120": {
+    "role": "Logging server",
+    "criticality": "low",
+    "expected_sources": ["asset_inventory.txt"],
+    "expert_ports": [22, 514, 9200, 5601, 5044, 8080],
+    "listening_ports": []
+  },
+  "10.0.14.130": {
+    "role": "VPN concentrator",
+    "criticality": "high",
+    "expected_sources": ["asset_inventory.txt", "network_topology.txt"],
+    "expert_ports": [443, 22, 1194, 1080, 1701, 1324],
+    "listening_ports": []
+  },
+  "10.0.15.140": {
+    "role": "Proxy server",
+    "criticality": "medium",
+    "expected_sources": ["asset_inventory.txt"],
+    "expert_ports": [443, 22, 8080, 3128, 80, 8888],
     "listening_ports": []
   }
 }
