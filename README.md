@@ -182,6 +182,24 @@ the ground-truth lab protocol needed to make them non-trivial.
 | Audit verdict | **PASS, grade A, 98.1/100** | zero failed checks on the graded arm |
 | Context-agent eval (M1) | Δρ = **+1.90** | −0.90 blind → +1.00 aware vs expert ranking |
 
+## Interactive demo UI
+
+A zero-dependency local web UI for presenting the framework — every panel runs
+against the real backend (no canned output) and shows both the command and a
+structured backend trace (retrieved chunks, plan diffs, audit checks, priority
+moves):
+
+```bash
+LLM_BASE_URL=http://localhost:1234/v1 LLM_MODEL=<model> \
+    python scripts/demo_server.py --port 8765
+# open http://127.0.0.1:8765
+```
+
+Stages: grounded RAG (+ one-click abstention test) · recon READ→PLAN with
+context-aware vs context-blind plan diff · independent Q1–Q8 audit with
+severity-coded checks · context-aware prioritization with per-finding rank
+movement. LLM and index status shown in the header chips.
+
 ## Phase-review presentation pack
 
 Two generated PDFs plus the raw evidence behind them:
