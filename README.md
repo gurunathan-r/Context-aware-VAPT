@@ -13,6 +13,7 @@ CPU embeddings, ChromaDB, and an LM Studio–served LLM — no cloud, no API key
 | 2 | Recon Evaluation Agent (independent audit, Q1–Q8 quality score) | **Done (verdict PASS/WARN/FAIL)** |
 | 2 | Organizational Context Agent (Business Risk & Dead-End Prioritization) | **Done (132/132 tests passing)** |
 | 2 | Context Evaluation Harness (M1–M6 metrics vs Ground Truth) | **Done (Δρ = +1.90, 100% Dead-End recall)** |
+| 2 | Evaluation-loop hardening (metric fixes + MSSQL planning gap closed) | **Done (audit 98.1/100 PASS, 190 tests)** |
 | 3 | Exploitation agent + live lab integration | Roadmap |
 
 ## Phase 1 — Organizational RAG retrieval layer
@@ -62,7 +63,7 @@ python scripts/rag_query.py "Criticality of 10.0.1.5?" --filter source_type=asse
 `src/agents/recon.py` — first agent on the loop. Per target:
 
 1. **READ** — pulls asset/topology/policy context from the RAG (`gather_context`).
-2. **PLAN** — picks probe ports from context hints (HTTPS/SSH/DB mentions) via `plan_probes`.
+2. **PLAN** — picks probe ports from context hints (HTTPS/SSH/DB→443/22/1433+3389) via `plan_probes` and the shared `PORT_HINT_RULES` table.
 3. **PROBE** — safe TCP-connect checks only; **hard guardrail: RFC1918/documentation targets only** unless `--allow-public` (documented override).
 4. **RECORD** — structured `Finding` records (category, detail, severity hint, timestamp).
 5. **PUBLISH** — writes `data/intel/recon_findings_<ts>.md` + sidecar (`source_type="intel"`), indexes it → findings become retrievable organizational memory for the next run/agent.
@@ -157,7 +158,7 @@ against 10.0.1.5 using the organizational context above..."""
 ## Run tests
 
 ```bash
-pytest tests/ -v        # 174 tests, fully offline (LLM + network stubbed/isolated)
+pytest tests/ -v        # 190 tests, fully offline (LLM + network stubbed/isolated)
 ```
 
 ## Evaluation metrics
@@ -168,6 +169,35 @@ probing, recording, memory loop), the research ablation metrics
 (context-aware vs. context-blind, R1–R6), the Evaluation Agent's independent
 audit metrics (§Q: Q1–Q8 + composite score), the current testbed baseline, and
 the ground-truth lab protocol needed to make them non-trivial.
+
+### Current testbed numbers (post-fix, this build)
+
+| Metric | Value | Note |
+|---|---|---|
+| A1 context hit rate | 1.00 | RAG returns context for every target |
+| B2 plan recall (vs expert) | **1.000** | blind arm 0.833 — MSSQL/1433 hint fix |
+| B4 context sensitivity | 1.00 | plans change with context, always |
+| R2 recall delta (aware − blind) | **+0.167** | the ablation signal, quantified |
+| Q6 ground-truth fidelity | **1.000** | was 0.667 — planner gap found by the audit, then fixed |
+| Audit verdict | **PASS, grade A, 98.1/100** | zero failed checks on the graded arm |
+| Context-agent eval (M1) | Δρ = **+1.90** | −0.90 blind → +1.00 aware vs expert ranking |
+
+## Phase-review presentation pack
+
+Two generated PDFs plus the raw evidence behind them:
+
+```bash
+python scripts/generate_phase_review_pdfs.py
+```
+
+- `reports/Phase_Review_Handout_*.pdf` — 2-page summary: architecture flow,
+  verified results, before/after evaluation story, honest limitations.
+- `reports/Phase_Review_Demo_Backup_*.pdf` — captured live terminal transcripts
+  (grounded RAG + abstention, recon + memory loop, independent audit,
+  context-aware prioritization) rendered as terminal screenshots, each with a
+  scripted explanation and the key line to point at.
+- `reports/demo_transcripts/` — the raw capture files; re-run the demo commands
+  with `LLM_BASE_URL`/`LLM_MODEL` set to your local server, then regenerate.
 
 ## Generate a PDF report
 
