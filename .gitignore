@@ -25,5 +25,3 @@ reports/
 # OS noise
 .DS_Store
 
-# Compatibility symlink
-org_rag_phase1

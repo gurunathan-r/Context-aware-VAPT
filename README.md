@@ -10,6 +10,7 @@ CPU embeddings, ChromaDB, and an LM Studio–served LLM — no cloud, no API key
 | 1 | Retrieval layer (ingest → embed → store → retrieve → validate) | **Done, 1.00/1.00 validation hit rates** |
 | 1+ | RAG generation (local LLM, grounded answers + citations) | **Done** |
 | 2 | Recon Agent (RAG-driven, publishes intel back into the RAG) | **Done** |
+| 2 | Recon Evaluation Agent (independent audit, Q1–Q8 quality score) | **Done (verdict PASS/WARN/FAIL)** |
 | 2 | Organizational Context Agent (Business Risk & Dead-End Prioritization) | **Done (132/132 tests passing)** |
 | 2 | Context Evaluation Harness (M1–M6 metrics vs Ground Truth) | **Done (Δρ = +1.90, 100% Dead-End recall)** |
 | 3 | Exploitation agent + live lab integration | Roadmap |
@@ -96,6 +97,40 @@ the RFC1918 guardrail / `--allow-public` always applies first. Scope only ever
 a blocking record and **zero probes**; hosts with no matching policy keep
 today's behavior. Covered by 21 offline tests (mocked network).
 
+## Recon Evaluation Agent (Phase 2, implemented)
+
+`src/agents/eval_agent.py` — the *checker* for the recon agent. `src/eval.py`
+measures what the agent did (A–E/R); the Evaluation Agent asks whether those
+artifacts can be trusted. It re-reads exactly what the recon run produced
+(per-target snapshots, the published intel report + sidecar, an optional lab
+profile), never calls the recon agent's internals to justify an outcome, and
+emits a graded verdict.
+
+**Q metric set** (full formulas in [metrics.md §Q](metrics.md)): Q1 grounding,
+Q2 context use, Q3 safety integrity, Q4 evidence integrity, Q5 honesty,
+Q6 ground-truth fidelity, Q7 narrative quality, Q8 organization awareness.
+Every check is `critical` / `major` / `minor`; a failed critical check forces
+**FAIL** regardless of score, otherwise the weighted composite
+`recon_quality_score` (0–100) decides PASS ≥ 85 / WARN ≥ 70 / FAIL, with an A–F
+grade. Checks whose inputs are absent are reported **n/a** (never scored 0).
+
+```bash
+python scripts/run_eval_agent.py --ground-truth results/ground_truth_testbed.json
+python scripts/run_eval_agent.py --probe --publish          # include probe + memory-loop checks
+python scripts/run_eval_agent.py --llm                      # LLM narrative judge (R5/Q7)
+python scripts/run_eval_agent.py --snapshots results/recon_audit_<ts>.json   # re-audit, offline
+python scripts/run_eval_agent.py --strict                   # exit 1 on FAIL (CI gate)
+python scripts/eval_recon.py --audit --llm                  # A–E/R table with R5 filled in
+```
+
+Outputs `results/recon_audit_<ts>.json` (verdict, per-arm Q scores, every check
+with its evidence, the snapshots for re-auditing) and a readable
+`results/recon_audit_<ts>.md`.
+
+The blind arm is the ablation **control**: it is reported per arm but only the
+aware arm is graded, so the audit itself shows the thesis signal — the aware
+arm consumes retrieved knowledge (Q8 = 1.0) while the control cannot (Q8 = 0.0).
+
 ### Example: how a future Planning Agent will use this
 
 ```python
@@ -122,7 +157,7 @@ against 10.0.1.5 using the organizational context above..."""
 ## Run tests
 
 ```bash
-pytest tests/ -v        # 119 tests, fully offline (LLM + network stubbed/isolated)
+pytest tests/ -v        # 174 tests, fully offline (LLM + network stubbed/isolated)
 ```
 
 ## Evaluation metrics
@@ -130,7 +165,8 @@ pytest tests/ -v        # 119 tests, fully offline (LLM + network stubbed/isolat
 See **[metrics.md](metrics.md)** for the full evaluation framework for the
 Recon Agent — stage-by-stage metrics (context quality, planning quality,
 probing, recording, memory loop), the research ablation metrics
-(context-aware vs. context-blind, R1–R6), the current testbed baseline, and
+(context-aware vs. context-blind, R1–R6), the Evaluation Agent's independent
+audit metrics (§Q: Q1–Q8 + composite score), the current testbed baseline, and
 the ground-truth lab protocol needed to make them non-trivial.
 
 ## Generate a PDF report
@@ -146,7 +182,7 @@ Requires Python 3.10+. All processing is local (CPU-only); the only network
 access is the one-time Hugging Face model download on first run.
 
 ```bash
-cd org_rag_phase1
+# from the project root (the directory holding config.py and src/)
 python -m venv .venv && source .venv/bin/activate   # recommended
 pip install -r requirements.txt
 ```
@@ -161,7 +197,10 @@ pip install -r requirements.txt
 - **Exploitation agent** — safe, lab-only exploitation of planned paths.
 - **Ablation study** — the research deliverable: run the pipeline with and
   without organizational context (context-blind vs. context-aware) and measure
-  the difference in VAPT plans and priorities.
+  the difference in VAPT plans and priorities (harness + audit agent in place;
+  needs ≥ 10 scenarios against a lab).
+- **Self-grading loop** — feed audit findings back to the recon agent so
+  failed checks (e.g. missing claim provenance) drive its next iteration.
 - **Recon improvements** — service-version fingerprinting from banners;
   topology-aware probe planning (firewall-rule reasoning via RAG); differential
   recon (diff vs. last run); dedup/cleanup of repeated intel reports.

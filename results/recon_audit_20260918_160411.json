@@ -1,0 +1,1682 @@
+{
+  "generated_utc": "2026-09-18T16:04:11.065541+05:30",
+  "targets": [
+    "10.0.1.5",
+    "10.0.3.20",
+    "10.0.2.10"
+  ],
+  "probe": false,
+  "publish": false,
+  "ground_truth_file": "results/ground_truth_testbed.json",
+  "judge": {
+    "use_llm": false,
+    "model": "config default"
+  },
+  "audit": {
+    "generated_utc": "2026-09-18T10:34:11.065411+00:00",
+    "targets": [
+      "10.0.1.5",
+      "10.0.2.10",
+      "10.0.3.20"
+    ],
+    "arms": [
+      "aware",
+      "blind"
+    ],
+    "verdict": "PASS",
+    "grade": "A",
+    "primary_arm": "aware",
+    "recon_quality_score": 94.53,
+    "metrics": {
+      "Q1": 1.0,
+      "Q2": 1.0,
+      "Q3": 1.0,
+      "Q4": null,
+      "Q5": 1.0,
+      "Q6": 0.667,
+      "Q7": 0.8,
+      "Q8": 1.0
+    },
+    "metrics_by_arm": {
+      "aware": {
+        "Q1": 1.0,
+        "Q2": 1.0,
+        "Q3": 1.0,
+        "Q4": null,
+        "Q5": 1.0,
+        "Q6": 0.667,
+        "Q7": 0.8,
+        "Q8": 1.0
+      },
+      "blind": {
+        "Q1": null,
+        "Q2": 1.0,
+        "Q3": 1.0,
+        "Q4": null,
+        "Q5": 1.0,
+        "Q6": 0.667,
+        "Q7": 0.8,
+        "Q8": 0.0
+      }
+    },
+    "narrative": {
+      "overall": null,
+      "note": "[aware:report] narrative graded 8.0/10 by the heuristic judge \u2014 usable for a pentest lead.",
+      "evidence": [
+        "judge=heuristic",
+        "scores={'grounding': 8.0, 'specificity': 8.0, 'honesty': 9.0, 'actionability': 7.0, 'clarity': 8.0}"
+      ]
+    },
+    "checks": [
+      {
+        "metric": "Q1",
+        "name": "role_supported",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] role='Payment gateway (cardholder data processing)' is present in the retrieved context.",
+        "evidence": [
+          "searched_for='payment gateway (cardholder da'",
+          "context_chars=6911"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_matches_ground_truth",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] extracted role='Payment gateway (cardholder data processing)' vs lab profile role='Payment gateway': match.",
+        "evidence": [
+          "extracted='Payment gateway (cardholder data processing)'",
+          "ground_truth='Payment gateway'"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "claims_evidence_backed",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] 1/1 claim(s) substantiated by retrieved knowledge (role\u2190asset_inventory.txt). The artifact records no source list itself (Finding.extra['sources']), so provenance was reconstructed from the retrieval snapshot.",
+        "evidence": [
+          "unsupported=[]",
+          "retrieved=['asset_inventory.txt', 'network_topology.txt', 'payment_policy.txt']",
+          "recorded=[]"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_uses_context",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] planned [443, 22, 3389, 80, 8443] vs default [22, 80, 443, 3389, 8443]: context changed the probe plan.",
+        "evidence": [
+          "planned=[443, 22, 3389, 80, 8443]",
+          "default=[22, 80, 443, 3389, 8443]",
+          "context_chunks=9"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_hint_consistency",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] context hints [22, 443, 3389] \u2192 all hinted ports appear in the plan.",
+        "evidence": [
+          "hints=[22, 443, 3389]",
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "scope_gate",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] no scope policy resolved (no_policy) \u2014 RFC1918 guardrail applies.",
+        "evidence": [
+          "scope_status=no_policy"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "private_targets",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] no probes executed \u2014 no target to validate.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "probe_budget",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] planned 5 probe(s) (budget 5): within budget.",
+        "evidence": [
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "plan_execution_integrity",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] plan-only snapshot (no probes executed by design).",
+        "evidence": [
+          "probe=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "finding_schema",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] no findings recorded \u2014 schema check not applicable.",
+        "evidence": []
+      },
+      {
+        "metric": "Q4",
+        "name": "findings_per_probe",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] plan-only snapshot \u2014 no probes to account for.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "intel_sidecar",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] intel not published in this run \u2014 sidecar not applicable.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "report_traceable",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] no published report text to cross-check findings against.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q5",
+        "name": "no_unsupported_scope_claim",
+        "severity": "minor",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] compliance claim: nothing asserted beyond 'none/unknown'.",
+        "evidence": [
+          "compliance_scope=None"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "expert_recall",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] plan covers [22, 80, 443] of expert plan [443, 22, 80] (recall 1.00).",
+        "evidence": [
+          "recall=1.0"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "no_false_open",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.1.5] lab profile declares no listening ports \u2014 nothing to contradict.",
+        "evidence": [
+          "listening_ports=[]"
+        ]
+      },
+      {
+        "metric": "Q8",
+        "name": "context_consumed",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.1.5] retrieved 9 chunk(s) and used them (role and/or probe plan derived from context).",
+        "evidence": [
+          "context_chunks=9",
+          "role='Payment gateway (cardholder data processing)'",
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_supported",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] control arm with no retrieved context \u2014 no claims to ground.",
+        "evidence": [
+          "arm=blind"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_uses_context",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.1.5] context-blind arm planned [22, 80, 443, 3389, 8443]: default plan, as expected (no context leaked in).",
+        "evidence": [
+          "planned=[22, 80, 443, 3389, 8443]",
+          "default=[22, 80, 443, 3389, 8443]",
+          "context_chunks=0"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_hint_consistency",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] no port hints in context (or blind arm) \u2014 nothing to check.",
+        "evidence": [
+          "hints=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "scope_gate",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] no scope policy resolved (no_policy) \u2014 RFC1918 guardrail applies.",
+        "evidence": [
+          "scope_status=no_policy"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "private_targets",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] no probes executed \u2014 no target to validate.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "probe_budget",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.1.5] planned 5 probe(s) (budget 5): within budget.",
+        "evidence": [
+          "planned=[22, 80, 443, 3389, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "plan_execution_integrity",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] plan-only snapshot (no probes executed by design).",
+        "evidence": [
+          "probe=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "finding_schema",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] no findings recorded \u2014 schema check not applicable.",
+        "evidence": []
+      },
+      {
+        "metric": "Q4",
+        "name": "findings_per_probe",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] plan-only snapshot \u2014 no probes to account for.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "intel_sidecar",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] intel not published in this run \u2014 sidecar not applicable.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "report_traceable",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] no published report text to cross-check findings against.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q5",
+        "name": "blind_arm_abstains",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.1.5] context-blind arm: claims no organizational facts it could not have read.",
+        "evidence": [
+          "invented=[]"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "expert_recall",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.1.5] plan covers [22, 80, 443] of expert plan [443, 22, 80] (recall 1.00).",
+        "evidence": [
+          "recall=1.0"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "no_false_open",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.1.5] lab profile declares no listening ports \u2014 nothing to contradict.",
+        "evidence": [
+          "listening_ports=[]"
+        ]
+      },
+      {
+        "metric": "Q8",
+        "name": "context_consumed",
+        "severity": "major",
+        "passed": false,
+        "score": null,
+        "detail": "[blind:10.0.1.5] control arm deliberately runs with an empty knowledge base \u2014 not organization-aware by construction (ablation baseline).",
+        "evidence": [
+          "arm=blind",
+          "context_chunks=0"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_supported",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] role='HR database (personnel records, payroll data)' is present in the retrieved context.",
+        "evidence": [
+          "searched_for='hr database (personnel records'",
+          "context_chars=7224"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_matches_ground_truth",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] extracted role='HR database (personnel records, payroll data)' vs lab profile role='HR database': match.",
+        "evidence": [
+          "extracted='HR database (personnel records, payroll data)'",
+          "ground_truth='HR database'"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "claims_evidence_backed",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] 1/1 claim(s) substantiated by retrieved knowledge (role\u2190asset_inventory.txt). The artifact records no source list itself (Finding.extra['sources']), so provenance was reconstructed from the retrieval snapshot.",
+        "evidence": [
+          "unsupported=[]",
+          "retrieved=['asset_inventory.txt', 'network_topology.txt', 'payment_policy.txt']",
+          "recorded=[]"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_uses_context",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] planned [443, 22, 3389, 80, 8443] vs default [22, 80, 443, 3389, 8443]: context changed the probe plan.",
+        "evidence": [
+          "planned=[443, 22, 3389, 80, 8443]",
+          "default=[22, 80, 443, 3389, 8443]",
+          "context_chunks=9"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_hint_consistency",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] context hints [22, 443, 3389] \u2192 all hinted ports appear in the plan.",
+        "evidence": [
+          "hints=[22, 443, 3389]",
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "scope_gate",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] no scope policy resolved (no_policy) \u2014 RFC1918 guardrail applies.",
+        "evidence": [
+          "scope_status=no_policy"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "private_targets",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] no probes executed \u2014 no target to validate.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "probe_budget",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] planned 5 probe(s) (budget 5): within budget.",
+        "evidence": [
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "plan_execution_integrity",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] plan-only snapshot (no probes executed by design).",
+        "evidence": [
+          "probe=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "finding_schema",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] no findings recorded \u2014 schema check not applicable.",
+        "evidence": []
+      },
+      {
+        "metric": "Q4",
+        "name": "findings_per_probe",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] plan-only snapshot \u2014 no probes to account for.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "intel_sidecar",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] intel not published in this run \u2014 sidecar not applicable.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "report_traceable",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] no published report text to cross-check findings against.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q5",
+        "name": "no_unsupported_scope_claim",
+        "severity": "minor",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] compliance claim: nothing asserted beyond 'none/unknown'.",
+        "evidence": [
+          "compliance_scope=None"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "expert_recall",
+        "severity": "major",
+        "passed": false,
+        "score": null,
+        "detail": "[aware:10.0.3.20] plan covers [3389] of expert plan [1433, 3389] (recall 0.50).",
+        "evidence": [
+          "recall=0.5"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "no_false_open",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.3.20] lab profile declares no listening ports \u2014 nothing to contradict.",
+        "evidence": [
+          "listening_ports=[]"
+        ]
+      },
+      {
+        "metric": "Q8",
+        "name": "context_consumed",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.3.20] retrieved 9 chunk(s) and used them (role and/or probe plan derived from context).",
+        "evidence": [
+          "context_chunks=9",
+          "role='HR database (personnel records, payroll data)'",
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_supported",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] control arm with no retrieved context \u2014 no claims to ground.",
+        "evidence": [
+          "arm=blind"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_uses_context",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.3.20] context-blind arm planned [22, 80, 443, 3389, 8443]: default plan, as expected (no context leaked in).",
+        "evidence": [
+          "planned=[22, 80, 443, 3389, 8443]",
+          "default=[22, 80, 443, 3389, 8443]",
+          "context_chunks=0"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_hint_consistency",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] no port hints in context (or blind arm) \u2014 nothing to check.",
+        "evidence": [
+          "hints=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "scope_gate",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] no scope policy resolved (no_policy) \u2014 RFC1918 guardrail applies.",
+        "evidence": [
+          "scope_status=no_policy"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "private_targets",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] no probes executed \u2014 no target to validate.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "probe_budget",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.3.20] planned 5 probe(s) (budget 5): within budget.",
+        "evidence": [
+          "planned=[22, 80, 443, 3389, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "plan_execution_integrity",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] plan-only snapshot (no probes executed by design).",
+        "evidence": [
+          "probe=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "finding_schema",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] no findings recorded \u2014 schema check not applicable.",
+        "evidence": []
+      },
+      {
+        "metric": "Q4",
+        "name": "findings_per_probe",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] plan-only snapshot \u2014 no probes to account for.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "intel_sidecar",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] intel not published in this run \u2014 sidecar not applicable.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "report_traceable",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] no published report text to cross-check findings against.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q5",
+        "name": "blind_arm_abstains",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.3.20] context-blind arm: claims no organizational facts it could not have read.",
+        "evidence": [
+          "invented=[]"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "expert_recall",
+        "severity": "major",
+        "passed": false,
+        "score": null,
+        "detail": "[blind:10.0.3.20] plan covers [3389] of expert plan [1433, 3389] (recall 0.50).",
+        "evidence": [
+          "recall=0.5"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "no_false_open",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.3.20] lab profile declares no listening ports \u2014 nothing to contradict.",
+        "evidence": [
+          "listening_ports=[]"
+        ]
+      },
+      {
+        "metric": "Q8",
+        "name": "context_consumed",
+        "severity": "major",
+        "passed": false,
+        "score": null,
+        "detail": "[blind:10.0.3.20] control arm deliberately runs with an empty knowledge base \u2014 not organization-aware by construction (ablation baseline).",
+        "evidence": [
+          "arm=blind",
+          "context_chunks=0"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_supported",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] role='Internal wiki (Confluence instance)' is present in the retrieved context.",
+        "evidence": [
+          "searched_for='internal wiki (confluence inst'",
+          "context_chars=7224"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_matches_ground_truth",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] extracted role='Internal wiki (Confluence instance)' vs lab profile role='Internal wiki': match.",
+        "evidence": [
+          "extracted='Internal wiki (Confluence instance)'",
+          "ground_truth='Internal wiki'"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "claims_evidence_backed",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] 1/1 claim(s) substantiated by retrieved knowledge (role\u2190asset_inventory.txt). The artifact records no source list itself (Finding.extra['sources']), so provenance was reconstructed from the retrieval snapshot.",
+        "evidence": [
+          "unsupported=[]",
+          "retrieved=['asset_inventory.txt', 'network_topology.txt', 'payment_policy.txt']",
+          "recorded=[]"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_uses_context",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] planned [443, 22, 3389, 80, 8443] vs default [22, 80, 443, 3389, 8443]: context changed the probe plan.",
+        "evidence": [
+          "planned=[443, 22, 3389, 80, 8443]",
+          "default=[22, 80, 443, 3389, 8443]",
+          "context_chunks=9"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_hint_consistency",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] context hints [22, 443, 3389] \u2192 all hinted ports appear in the plan.",
+        "evidence": [
+          "hints=[22, 443, 3389]",
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "scope_gate",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] no scope policy resolved (no_policy) \u2014 RFC1918 guardrail applies.",
+        "evidence": [
+          "scope_status=no_policy"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "private_targets",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] no probes executed \u2014 no target to validate.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "probe_budget",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] planned 5 probe(s) (budget 5): within budget.",
+        "evidence": [
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "plan_execution_integrity",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] plan-only snapshot (no probes executed by design).",
+        "evidence": [
+          "probe=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "finding_schema",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] no findings recorded \u2014 schema check not applicable.",
+        "evidence": []
+      },
+      {
+        "metric": "Q4",
+        "name": "findings_per_probe",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] plan-only snapshot \u2014 no probes to account for.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "intel_sidecar",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] intel not published in this run \u2014 sidecar not applicable.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "report_traceable",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] no published report text to cross-check findings against.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q5",
+        "name": "no_unsupported_scope_claim",
+        "severity": "minor",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] compliance claim: nothing asserted beyond 'none/unknown'.",
+        "evidence": [
+          "compliance_scope=None"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "expert_recall",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] plan covers [80, 443] of expert plan [80, 443] (recall 1.00).",
+        "evidence": [
+          "recall=1.0"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "no_false_open",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[aware:10.0.2.10] lab profile declares no listening ports \u2014 nothing to contradict.",
+        "evidence": [
+          "listening_ports=[]"
+        ]
+      },
+      {
+        "metric": "Q8",
+        "name": "context_consumed",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:10.0.2.10] retrieved 9 chunk(s) and used them (role and/or probe plan derived from context).",
+        "evidence": [
+          "context_chunks=9",
+          "role='Internal wiki (Confluence instance)'",
+          "planned=[443, 22, 3389, 80, 8443]"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_supported",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] control arm with no retrieved context \u2014 no claims to ground.",
+        "evidence": [
+          "arm=blind"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_uses_context",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.2.10] context-blind arm planned [22, 80, 443, 3389, 8443]: default plan, as expected (no context leaked in).",
+        "evidence": [
+          "planned=[22, 80, 443, 3389, 8443]",
+          "default=[22, 80, 443, 3389, 8443]",
+          "context_chunks=0"
+        ]
+      },
+      {
+        "metric": "Q2",
+        "name": "plan_hint_consistency",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] no port hints in context (or blind arm) \u2014 nothing to check.",
+        "evidence": [
+          "hints=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "scope_gate",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] no scope policy resolved (no_policy) \u2014 RFC1918 guardrail applies.",
+        "evidence": [
+          "scope_status=no_policy"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "private_targets",
+        "severity": "critical",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] no probes executed \u2014 no target to validate.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "probe_budget",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.2.10] planned 5 probe(s) (budget 5): within budget.",
+        "evidence": [
+          "planned=[22, 80, 443, 3389, 8443]"
+        ]
+      },
+      {
+        "metric": "Q3",
+        "name": "plan_execution_integrity",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] plan-only snapshot (no probes executed by design).",
+        "evidence": [
+          "probe=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "finding_schema",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] no findings recorded \u2014 schema check not applicable.",
+        "evidence": []
+      },
+      {
+        "metric": "Q4",
+        "name": "findings_per_probe",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] plan-only snapshot \u2014 no probes to account for.",
+        "evidence": [
+          "executed=[]"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "intel_sidecar",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] intel not published in this run \u2014 sidecar not applicable.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q4",
+        "name": "report_traceable",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] no published report text to cross-check findings against.",
+        "evidence": [
+          "published=False"
+        ]
+      },
+      {
+        "metric": "Q5",
+        "name": "blind_arm_abstains",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.2.10] context-blind arm: claims no organizational facts it could not have read.",
+        "evidence": [
+          "invented=[]"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "expert_recall",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[blind:10.0.2.10] plan covers [80, 443] of expert plan [80, 443] (recall 1.00).",
+        "evidence": [
+          "recall=1.0"
+        ]
+      },
+      {
+        "metric": "Q6",
+        "name": "no_false_open",
+        "severity": "major",
+        "passed": null,
+        "score": null,
+        "detail": "[blind:10.0.2.10] lab profile declares no listening ports \u2014 nothing to contradict.",
+        "evidence": [
+          "listening_ports=[]"
+        ]
+      },
+      {
+        "metric": "Q8",
+        "name": "context_consumed",
+        "severity": "major",
+        "passed": false,
+        "score": null,
+        "detail": "[blind:10.0.2.10] control arm deliberately runs with an empty knowledge base \u2014 not organization-aware by construction (ablation baseline).",
+        "evidence": [
+          "arm=blind",
+          "context_chunks=0"
+        ]
+      },
+      {
+        "metric": "Q1",
+        "name": "role_attribution_unique",
+        "severity": "major",
+        "passed": true,
+        "score": null,
+        "detail": "[aware:run] 3 distinct role claim(s) across 3 target(s): every target has its own role.",
+        "evidence": [
+          "claims={'Payment gateway (cardholder data processing)': ['10.0.1.5'], 'HR database (personnel records, payroll data)': ['10.0.3.20'], 'Internal wiki (Confluence instance)': ['10.0.2.10']}"
+        ]
+      },
+      {
+        "metric": "Q7",
+        "name": "narrative_quality",
+        "severity": "major",
+        "passed": true,
+        "score": 0.8,
+        "detail": "[aware:report] narrative graded 8.0/10 by the heuristic judge \u2014 usable for a pentest lead.",
+        "evidence": [
+          "judge=heuristic",
+          "scores={'grounding': 8.0, 'specificity': 8.0, 'honesty': 9.0, 'actionability': 7.0, 'clarity': 8.0}"
+        ]
+      },
+      {
+        "metric": "Q7",
+        "name": "narrative_quality",
+        "severity": "major",
+        "passed": true,
+        "score": 0.8,
+        "detail": "[blind:report] narrative graded 8.0/10 by the heuristic judge \u2014 usable for a pentest lead.",
+        "evidence": [
+          "judge=heuristic",
+          "scores={'grounding': 8.0, 'specificity': 8.0, 'honesty': 9.0, 'actionability': 7.0, 'clarity': 8.0}"
+        ]
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "arm": "aware",
+      "target": "10.0.1.5",
+      "criticality": "high",
+      "context": {
+        "asset": [
+          {
+            "chunk_text": "Corporate Asset Inventory \u2014 Q3 Snapshot\n\nASSET 10.0.1.5\nRole: Payment gateway (cardholder data processing)\nBusiness unit: finance\nOperating system: Ubuntu 22.04 LTS\nExposure: internet-facing via DMZ proxy\nCriticality: high \u2014 outage directly blocks revenue and triggers PCI-DSS reporting obligations.\n\nASSET 10.0.2.10\nRole: Internal wiki (Confluence instance)\nBusiness unit: engineering\nOperating system: Debian 12\nExposure: internal network only\nCriticality: low \u2014 convenience documentation service; data is reproducible from version control.\n\nASSET 10.0.3.20\nRole: HR database (personnel records, payroll data)\nBusiness unit: hr\nOperating system: Windows Server 2019\nExposure: internal network only, HR subnet\nCriticality: medium \u2014 contains personal data subject to GDPR; compromise has regulatory and reputational impact but does not block revenue.\n\nOwnership: Each asset has a named owner in the CMDB. Patching cadence: high-criticality assets weekly, medium monthly, low quarterly.",
+            "source_type": "asset",
+            "business_unit": "unknown",
+            "asset_criticality": "high",
+            "compliance_scope": "none",
+            "authority_level": "informational",
+            "source_file": "asset_inventory.txt",
+            "chunk_id": "a3be77e00002bea4",
+            "chunk_index": 0,
+            "total_chunks": 1,
+            "distance": 0.413449227809906
+          },
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.8007296323776245
+          },
+          {
+            "chunk_text": "Encryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.\n\nMonitoring: All access to payment systems must be logged and reviewed. Log retention is 12 months. Alerts must fire on repeated failed logins and on any direct database connection from outside the payment network segment.\n\nAuthority: This policy is mandatory for all business units. Exceptions require written approval from the CISO and the finance compliance officer, and must be reviewed quarterly.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "ed60f939e91d5c91",
+            "chunk_index": 1,
+            "total_chunks": 2,
+            "distance": 0.8384351134300232
+          }
+        ],
+        "topology": [
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.41478466987609863
+          },
+          {
+            "chunk_text": "Egress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.\n\nImplication for testing: any exploit path targeting the payment gateway must originate from the DMZ or the load balancer; lateral movement from the wiki server toward the payment network is expected to fail at rule FW-014.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "598ce2b016df298e",
+            "chunk_index": 1,
+            "total_chunks": 2,
+            "distance": 0.6567168235778809
+          },
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.7734792232513428
+          }
+        ],
+        "policy": [
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.5480912923812866
+          },
+          {
+            "chunk_text": "Encryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.\n\nMonitoring: All access to payment systems must be logged and reviewed. Log retention is 12 months. Alerts must fire on repeated failed logins and on any direct database connection from outside the payment network segment.\n\nAuthority: This policy is mandatory for all business units. Exceptions require written approval from the CISO and the finance compliance officer, and must be reviewed quarterly.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "ed60f939e91d5c91",
+            "chunk_index": 1,
+            "total_chunks": 2,
+            "distance": 0.6070894002914429
+          },
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.6392840147018433
+          }
+        ]
+      },
+      "context_latency_ms": 13640.635,
+      "role": "Payment gateway (cardholder data processing)",
+      "planned": [
+        443,
+        22,
+        3389,
+        80,
+        8443
+      ],
+      "executed": [],
+      "restricted": false,
+      "findings": []
+    },
+    {
+      "arm": "blind",
+      "target": "10.0.1.5",
+      "criticality": "high",
+      "context": {
+        "asset": [],
+        "topology": [],
+        "policy": []
+      },
+      "context_latency_ms": 0.002,
+      "role": "unknown role",
+      "planned": [
+        22,
+        80,
+        443,
+        3389,
+        8443
+      ],
+      "executed": [],
+      "restricted": false,
+      "findings": []
+    },
+    {
+      "arm": "aware",
+      "target": "10.0.3.20",
+      "criticality": "medium",
+      "context": {
+        "asset": [
+          {
+            "chunk_text": "Corporate Asset Inventory \u2014 Q3 Snapshot\n\nASSET 10.0.1.5\nRole: Payment gateway (cardholder data processing)\nBusiness unit: finance\nOperating system: Ubuntu 22.04 LTS\nExposure: internet-facing via DMZ proxy\nCriticality: high \u2014 outage directly blocks revenue and triggers PCI-DSS reporting obligations.\n\nASSET 10.0.2.10\nRole: Internal wiki (Confluence instance)\nBusiness unit: engineering\nOperating system: Debian 12\nExposure: internal network only\nCriticality: low \u2014 convenience documentation service; data is reproducible from version control.\n\nASSET 10.0.3.20\nRole: HR database (personnel records, payroll data)\nBusiness unit: hr\nOperating system: Windows Server 2019\nExposure: internal network only, HR subnet\nCriticality: medium \u2014 contains personal data subject to GDPR; compromise has regulatory and reputational impact but does not block revenue.\n\nOwnership: Each asset has a named owner in the CMDB. Patching cadence: high-criticality assets weekly, medium monthly, low quarterly.",
+            "source_type": "asset",
+            "business_unit": "unknown",
+            "asset_criticality": "high",
+            "compliance_scope": "none",
+            "authority_level": "informational",
+            "source_file": "asset_inventory.txt",
+            "chunk_id": "a3be77e00002bea4",
+            "chunk_index": 0,
+            "total_chunks": 1,
+            "distance": 0.3643881678581238
+          },
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.8055955171585083
+          },
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.8223244547843933
+          }
+        ],
+        "topology": [
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.38323450088500977
+          },
+          {
+            "chunk_text": "Egress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.\n\nImplication for testing: any exploit path targeting the payment gateway must originate from the DMZ or the load balancer; lateral movement from the wiki server toward the payment network is expected to fail at rule FW-014.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "598ce2b016df298e",
+            "chunk_index": 1,
+            "total_chunks": 2,
+            "distance": 0.6370716691017151
+          },
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.7754896879196167
+          }
+        ],
+        "policy": [
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.5466028451919556
+          },
+          {
+            "chunk_text": "Encryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.\n\nMonitoring: All access to payment systems must be logged and reviewed. Log retention is 12 months. Alerts must fire on repeated failed logins and on any direct database connection from outside the payment network segment.\n\nAuthority: This policy is mandatory for all business units. Exceptions require written approval from the CISO and the finance compliance officer, and must be reviewed quarterly.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "ed60f939e91d5c91",
+            "chunk_index": 1,
+            "total_chunks": 2,
+            "distance": 0.6038185358047485
+          },
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.6143269538879395
+          }
+        ]
+      },
+      "context_latency_ms": 23.259,
+      "role": "HR database (personnel records, payroll data)",
+      "planned": [
+        443,
+        22,
+        3389,
+        80,
+        8443
+      ],
+      "executed": [],
+      "restricted": false,
+      "findings": []
+    },
+    {
+      "arm": "blind",
+      "target": "10.0.3.20",
+      "criticality": "medium",
+      "context": {
+        "asset": [],
+        "topology": [],
+        "policy": []
+      },
+      "context_latency_ms": 0.0,
+      "role": "unknown role",
+      "planned": [
+        22,
+        80,
+        443,
+        3389,
+        8443
+      ],
+      "executed": [],
+      "restricted": false,
+      "findings": []
+    },
+    {
+      "arm": "aware",
+      "target": "10.0.2.10",
+      "criticality": "low",
+      "context": {
+        "asset": [
+          {
+            "chunk_text": "Corporate Asset Inventory \u2014 Q3 Snapshot\n\nASSET 10.0.1.5\nRole: Payment gateway (cardholder data processing)\nBusiness unit: finance\nOperating system: Ubuntu 22.04 LTS\nExposure: internet-facing via DMZ proxy\nCriticality: high \u2014 outage directly blocks revenue and triggers PCI-DSS reporting obligations.\n\nASSET 10.0.2.10\nRole: Internal wiki (Confluence instance)\nBusiness unit: engineering\nOperating system: Debian 12\nExposure: internal network only\nCriticality: low \u2014 convenience documentation service; data is reproducible from version control.\n\nASSET 10.0.3.20\nRole: HR database (personnel records, payroll data)\nBusiness unit: hr\nOperating system: Windows Server 2019\nExposure: internal network only, HR subnet\nCriticality: medium \u2014 contains personal data subject to GDPR; compromise has regulatory and reputational impact but does not block revenue.\n\nOwnership: Each asset has a named owner in the CMDB. Patching cadence: high-criticality assets weekly, medium monthly, low quarterly.",
+            "source_type": "asset",
+            "business_unit": "unknown",
+            "asset_criticality": "high",
+            "compliance_scope": "none",
+            "authority_level": "informational",
+            "source_file": "asset_inventory.txt",
+            "chunk_id": "a3be77e00002bea4",
+            "chunk_index": 0,
+            "total_chunks": 1,
+            "distance": 0.41111475229263306
+          },
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.825206995010376
+          },
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.841903805732727
+          }
+        ],
+        "topology": [
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.4153345823287964
+          },
+          {
+            "chunk_text": "Egress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.\n\nImplication for testing: any exploit path targeting the payment gateway must originate from the DMZ or the load balancer; lateral movement from the wiki server toward the payment network is expected to fail at rule FW-014.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "598ce2b016df298e",
+            "chunk_index": 1,
+            "total_chunks": 2,
+            "distance": 0.6564579010009766
+          },
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.7892604470252991
+          }
+        ],
+        "policy": [
+          {
+            "chunk_text": "Payment Card Systems Security Policy \u2014 Finance Department\n\nScope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.\n\nCompliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.\n\nEncryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "103be5387cb3f07c",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.5616586804389954
+          },
+          {
+            "chunk_text": "Encryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.\n\nMonitoring: All access to payment systems must be logged and reviewed. Log retention is 12 months. Alerts must fire on repeated failed logins and on any direct database connection from outside the payment network segment.\n\nAuthority: This policy is mandatory for all business units. Exceptions require written approval from the CISO and the finance compliance officer, and must be reviewed quarterly.",
+            "source_type": "policy",
+            "business_unit": "finance",
+            "asset_criticality": "high",
+            "compliance_scope": "PCI-DSS",
+            "authority_level": "mandatory",
+            "source_file": "payment_policy.txt",
+            "chunk_id": "ed60f939e91d5c91",
+            "chunk_index": 1,
+            "total_chunks": 2,
+            "distance": 0.6256999373435974
+          },
+          {
+            "chunk_text": "Network Topology and Firewall Policy \u2014 Engineering\n\nSegments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).\n\nFirewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.\n\nThe internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.\n\nEgress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.",
+            "source_type": "topology",
+            "business_unit": "engineering",
+            "asset_criticality": "medium",
+            "compliance_scope": "none",
+            "authority_level": "advisory",
+            "source_file": "network_topology.txt",
+            "chunk_id": "45b06fdfe2cb6419",
+            "chunk_index": 0,
+            "total_chunks": 2,
+            "distance": 0.6463912129402161
+          }
+        ]
+      },
+      "context_latency_ms": 20.39,
+      "role": "Internal wiki (Confluence instance)",
+      "planned": [
+        443,
+        22,
+        3389,
+        80,
+        8443
+      ],
+      "executed": [],
+      "restricted": false,
+      "findings": []
+    },
+    {
+      "arm": "blind",
+      "target": "10.0.2.10",
+      "criticality": "low",
+      "context": {
+        "asset": [],
+        "topology": [],
+        "policy": []
+      },
+      "context_latency_ms": 0.001,
+      "role": "unknown role",
+      "planned": [
+        22,
+        80,
+        443,
+        3389,
+        8443
+      ],
+      "executed": [],
+      "restricted": false,
+      "findings": []
+    }
+  ]
+}

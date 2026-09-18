@@ -12,8 +12,10 @@ import socket
 import pytest
 
 from org_rag_phase1.src.agents.recon import (
+    CANDIDATE_PORTS,
     DEFAULT_PORTS,
     Finding,
+    PORT_HINT_RULES,
     ReconAgent,
     _extract_role,
     check_target_allowed,
@@ -81,6 +83,23 @@ class TestProbePlanning:
         context = [{"chunk_text": "The HR database stores personnel records."}]
         assert 3389 in plan_probes(context)
 
+    def test_database_hint_also_adds_mssql_1433(self):
+        """Regression: the HR database is MSSQL on Windows — a "database" hint
+        must plan tcp/1433 too, or expert recall (Q6) can never reach 1.0."""
+        context = [{"chunk_text": "The HR database stores personnel records."}]
+        plan = plan_probes(context)
+        assert 1433 in plan
+        assert plan.index(1433) < plan.index(80)   # hinted ports come first
+
+    def test_planned_ports_stay_within_the_candidate_universe(self):
+        """Whatever the hints say, the plan never leaves CANDIDATE_PORTS."""
+        context = [{"chunk_text": "https ssh database sql 443 22 1433 3389 8443 80"}]
+        assert set(plan_probes(context)) <= set(CANDIDATE_PORTS)
+
+    def test_every_hint_port_is_in_the_candidate_universe(self):
+        """The contract table can never hint a port the budget forbids."""
+        assert all(port in CANDIDATE_PORTS for _, port in PORT_HINT_RULES)
+
 
 class TestProbePort:
     def test_open_port_on_loopback(self):
@@ -122,6 +141,8 @@ class TestReconAgent:
         findings = agent.run_recon("10.0.1.5")
         assert findings[0].category == "info"          # context record first
         assert findings[0].extra["context_chunks"] > 0  # RAG actually consulted
+        # Every context-derived claim carries the documents that support it.
+        assert findings[0].extra["sources"], "claims must be traceable to retrieved documents"
         categories = {f.category for f in findings}
         assert categories <= {"info", "port_open", "port_filtered", "error"}
 

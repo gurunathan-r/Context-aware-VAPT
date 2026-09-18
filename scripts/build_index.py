@@ -18,6 +18,7 @@ from pathlib import Path
 # lives one level above the project root (repo root holds org_rag_phase1/).
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT.parent))
+sys.path.insert(0, str(PROJECT_ROOT))  # org_rag_phase1/ path-shim → this copy
 
 from org_rag_phase1.config import RAW_DIR  # noqa: E402
 from org_rag_phase1.src.index import index_chunks, index_stats  # noqa: E402

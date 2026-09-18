@@ -259,21 +259,23 @@ def _role_matches(extracted: str, canonical: str) -> bool:
     return a in b or b in a
 
 
-def _is_open_specific(snapshot: dict[str, Any], gt: GroundTruthTarget) -> bool:
-    """True if any executed probe reported the target open."""
-    return any(_is_open(f) for f in _findings_by_target(snapshot))
-
-
 def _tp_fp_fn_tn(snapshot: dict[str, Any], gt: GroundTruthTarget) -> tuple[int, int, int, int]:
-    """(tp, fp, fn, tn) over executed ports vs the listening ground truth."""
+    """(tp, fp, fn, tn) over *probed* ports vs the listening ground truth.
+
+    Confusion-matrix semantics for metrics.md C2–C4: FP/FN/TN are defined over
+    the ports the agent actually probed. A listening port the agent never
+    probed is a *planning* miss (penalized by B2 plan recall), not a probing
+    error — counting it as FN made C2/C4 depend on the plan instead of probe
+    accuracy, and reported a dead-but-planned host as 100% wrong.
+    """
     listening = gt.listening_ports if gt else set()
     open_ports = {p for f in _findings_by_target(snapshot) if _is_open(f)
                   for m in [_PORT_RE.search(f.detail)] if m and (p := int(m.group(1)))}
     probed = set(_executed_ports(snapshot))
-    tp = len(open_ports & listening)        # reported open & actually listening
-    fp = len(open_ports - listening)        # reported open but closed (invents attack surface)
-    fn = len(listening - open_ports)        # listening but not reported open (missed)
-    tn = len(probed - listening - open_ports)  # probed, closed, correctly closed
+    tp = len(open_ports & listening & probed)      # probed, reported open, actually listening
+    fp = len((open_ports - listening) & probed)    # probed, reported open, actually closed
+    fn = len((listening & probed) - open_ports)    # probed, actually listening, not reported open
+    tn = len(probed - listening - open_ports)      # probed, closed, correctly closed
     return tp, fp, fn, tn
 
 
@@ -290,6 +292,7 @@ def compute_metrics(
     gt_map: dict[str, GroundTruthTarget] | None = None,
     *,
     numbered: bool = False,
+    narrative_quality: float | None = None,
 ) -> dict[str, Any]:
     """Reduce per-target snapshots into the metrics.md metric set.
 
@@ -298,6 +301,10 @@ def compute_metrics(
         gt_map: Ground-truth profiles; metrics that need them degrade to None.
         numbered: When True, emit keys as "A1".."R6" for the reference tables;
             otherwise use human-readable names.
+        narrative_quality: R5 rating in 0–1, supplied by the Evaluation Agent
+            (``ReconEvalAgent.audit(...).by_arm["aware"]["Q7"]``). R5 needs a
+            judge, which this module deliberately does not contain; without a
+            caller-supplied rating R5 stays None ("n/a") instead of guessing.
 
     Returns:
         A dict of metric name -> value (float | int | None).
@@ -310,15 +317,18 @@ def compute_metrics(
     for s in snapshots:
         by_arm.setdefault(s["arm"], []).append(s)
     aware, blind = by_arm[ARM_AWARE], by_arm[ARM_BLIND]
-    n = max(len(aware), len(blind), 1)
 
     def targets_with(pred) -> list[dict]:
         return [s for s in aware if pred(s)]
 
     # --- A. Context quality (READ stage; aware arm) ------------------------
-    a1 = len(targets_with(lambda s: any(s["context"].values()))) / n
+    a1 = round(
+        len(targets_with(lambda s: any(s["context"].values()))) / len(aware), 3
+    ) if aware else None
     a2 = a3 = a4 = a5 = None
-    a_sources = targets_with(lambda s: s["context"]["asset"] or s["context"]["topology"] or s["context"]["policy"])
+    a_sources = targets_with(lambda s: any(
+        s["context"].get(k) for k in ("asset", "topology", "policy")
+    ))
     if a_sources:
         hit_sources = 0
         relevant = total = 0
@@ -336,19 +346,23 @@ def compute_metrics(
                 # ("Payment gateway (cardholder data processing)") while the
                 # lab profile stores the canonical short role.
                 role_hits += 1 if _role_matches(s["role"] or "", gt.role) else 0
-        if gt_map and any(_target_gt(gt_map, s["target"]) for s in a_sources):
-            expected_count = len([s for s in a_sources
-                                  if _target_gt(gt_map, s["target"]) and _target_gt(gt_map, s["target"]).expected_sources])
-            a2 = round(hit_sources / expected_count, 3) if expected_count else None
+        with_exp = [s for s in a_sources
+                    if (g := _target_gt(gt_map, s["target"])) is not None and g.expected_sources]
+        if with_exp:
+            a2 = round(hit_sources / len(with_exp), 3)
             a3 = round(relevant / total, 3) if total else None
-            role_count = len([s for s in a_sources
-                              if _target_gt(gt_map, s["target"]) and _target_gt(gt_map, s["target"]).role is not None])
-            a4 = round(role_hits / role_count, 3) if role_count else None
-        a5 = round(statistics.mean([s["context_latency_ms"] for s in aware]) if aware else 0, 3)
+        with_role = [s for s in a_sources
+                     if (g := _target_gt(gt_map, s["target"])) is not None and g.role is not None]
+        if with_role:
+            a4 = round(role_hits / len(with_role), 3)
+        a5 = round(statistics.mean([s["context_latency_ms"] for s in aware]), 3) if aware else None
 
     # --- B. Planning quality ----------------------------------------------
     b1 = b2 = b3 = None
-    if gt_map and any(_target_gt(gt_map, s["target"]).expert_ports for s in aware):
+    if gt_map and any(
+        (g := _target_gt(gt_map, s["target"])) is not None and g.expert_ports
+        for s in aware
+    ):
         p1 = p2 = p3 = 0
         order_corrs = []
         for s in aware:
@@ -363,33 +377,39 @@ def compute_metrics(
             corr = _order_correlation(s["planned"], expert)
             if corr is not None:
                 order_corrs.append(corr)
-        m = len([s for s in aware if _target_gt(gt_map, s["target"]).expert_ports])
+        m = len([s for s in aware
+                 if (g := _target_gt(gt_map, s["target"])) is not None and g.expert_ports])
         b1 = round(p1 / m, 3) if m else None
         b2 = round(p2 / m, 3) if m else None
         b3 = round(statistics.mean(order_corrs), 3) if order_corrs else None
+    # Pair the arms by target: zip() silently misaligned whenever one arm had a
+    # restricted/failed target, comparing t1-aware against t2-blind.
+    blind_by_target = {s["target"]: s for s in blind}
+    paired = [(s, blind_by_target[s["target"]]) for s in aware if s["target"] in blind_by_target]
     b4 = None
-    if aware and blind:
-        diff = sum(1 for a, b in zip(aware, blind) if a["planned"] != b["planned"])
-        b4 = round(diff / max(len(aware), len(blind)), 3)
-    b5 = round(statistics.mean([len(s["planned"]) for s in aware]) if aware else 0, 2)
+    if paired:
+        diff = sum(1 for a, b in paired if a["planned"] != b["planned"])
+        b4 = round(diff / len(paired), 3)
+    b5 = round(statistics.mean([len(s["planned"]) for s in aware]), 2) if aware else None
 
     # --- C. Probing performance --------------------------------------------
     c1 = c2 = c3 = c4 = c5 = None
     probed = [s for s in aware if not s["restricted"] and s["executed"]]
     if probed:
-        c1 = statistics.mean([len(s["executed"]) / len(s["planned"]) for s in probed if s["planned"]]) or 0.0
+        covered = [len(s["executed"]) / len(s["planned"]) for s in probed if s["planned"]]
+        c1 = round(statistics.mean(covered), 3) if covered else None
         if gt_map:
             tp = fp = fn = tn = 0
             for s in probed:
                 gt = _target_gt(gt_map, s["target"])
                 if gt is None or not gt.listening_ports:
                     continue
-                t, f, n, ng = _tp_fp_fn_tn(s, gt)
-                tp += t; fp += f; fn += n; tn += ng
+                t, f, n_miss, ng = _tp_fp_fn_tn(s, gt)
+                tp += t; fp += f; fn += n_miss; tn += ng
             denom = tp + fp + fn + tn
             c2 = round((tp + tn) / denom, 3) if denom else None
-            c3 = round(fp / (fp + tn), 3) if (fp + tn) else 0.0
-            c4 = round(fn / (fn + tp), 3) if (fn + tp) else 0.0
+            c3 = round(fp / (fp + tn), 3) if (fp + tn) else None
+            c4 = round(fn / (fn + tp), 3) if (fn + tp) else None
     c5 = round(statistics.mean([s.get("probe_latency_ms", 0.0) for s in probed]), 3) if probed else None
     c6 = 0                                      # guardrail violations: blocked by construction
     c7 = len(set((s["target"], p) for s in aware for p in _executed_ports(s)))
@@ -421,8 +441,10 @@ def compute_metrics(
     # --- E. Memory loop (requires publishing metadata) ----------------------
     e_metrics: dict[str, Any] = {k: None for k in ("e1", "e2", "e3", "e4", "e5")}
     published = [s for s in aware if s.get("published")]
-    if aware and published and "publish" in aware[0]:
-        e_metrics["e1"] = len(published) / len(aware)
+    # Gate on any published snapshot — the old "publish" in aware[0] check made
+    # every E-metric n/a whenever the *first* target failed to publish.
+    if aware and published:
+        e_metrics["e1"] = round(len(published) / len(aware), 3)
         intel_hits = sum(1 for s in published if s.get("intel_retrievable"))
         e_metrics["e2"] = round(intel_hits / len(published), 3) if published else None
         e_metrics["e3"] = e_metrics["e2"]  # both measure "found from intel", E3 needs LLM to differ
@@ -434,39 +456,45 @@ def compute_metrics(
     r2 = None
     if b2 is not None and blind and gt_map:
         b2_blind = None
-        blind_expert = [s for s in blind if _target_gt(gt_map, s["target"]).expert_ports]
-        m = len(blind_expert)
-        if m:
-            recall = sum(
+        blind_expert = [s for s in blind
+                        if (g := _target_gt(gt_map, s["target"])) is not None and g.expert_ports]
+        if blind_expert:
+            recall = statistics.mean(
                 len(set(s["planned"]) & set(_target_gt(gt_map, s["target"]).expert_ports))
                 / len(_target_gt(gt_map, s["target"]).expert_ports)
                 for s in blind_expert
-            ) / m
+            )
             b2_blind = round(recall, 3)
-        r2 = round(b2 - b2_blind, 3) if b2_blind is not None else None
+            r2 = round(b2 - b2_blind, 3)
 
+    # Paired per-target comparison: the old version averaged each arm over
+    # different target sets (blind defaulting to 0.0 when empty), so "wasted
+    # probe delta" could be manufactured by a missing arm rather than by
+    # context. Plan-only snapshots count planned ports; probe-mode counts
+    # executed ports.
     r3 = None
     if gt_map:
-        wasted_aware = wasted_blind = 0.0
-        m_a = m_b = 0
+        def _wasted(s: dict[str, Any], gt: GroundTruthTarget) -> int:
+            expert, listening = set(gt.expert_ports), set(gt.listening_ports)
+            ports = s.get("executed") or s.get("planned") or []
+            return len([p for p in ports if p not in expert and p not in listening])
+
+        wasted_a = []
+        wasted_b = []
         for s in aware:
             gt = _target_gt(gt_map, s["target"])
-            if gt is None:
+            partner = blind_by_target.get(s["target"])
+            if gt is None or partner is None:
                 continue
-            expert = set(gt.expert_ports)
-            wasted_aware += len([p for p in _executed_ports(s) if p not in expert and p not in gt.listening_ports])
-            m_a += 1
-        for s in blind:
-            gt = _target_gt(gt_map, s["target"])
-            if gt is None:
-                continue
-            expert = set(gt.expert_ports)
-            wasted_blind += len([p for p in _executed_ports(s) if p not in expert and p not in gt.listening_ports])
-            m_b += 1
-        wa = wasted_aware / m_a if m_a else 0.0
-        wb = wasted_blind / m_b if m_b else 0.0
-        r3 = round(wb - wa, 3)
+            wasted_a.append(_wasted(s, gt))
+            wasted_b.append(_wasted(partner, gt))
+        if wasted_a:
+            r3 = round(float(statistics.mean(wasted_b)) - float(statistics.mean(wasted_a)), 3)
 
+    # R4 counts each *true* open finding, weighted by the target's criticality
+    # (metrics.md: "Σ over true findings of criticality_weight(target)"). The
+    # old per-target any-open check gave a false-open report the same weight as
+    # a real finding — rewarding exactly the behavior C3 penalizes.
     r4 = None
     if gt_map and probed:
         def yield_sum(snaps: list[dict]) -> float:
@@ -476,11 +504,19 @@ def compute_metrics(
                 if gt is None:
                     continue
                 weight = CRITICALITY_WEIGHTS.get(gt.criticality, 1.0)
-                total_yield += weight * (1 if _is_open_specific(s, gt) else 0)
+                for f in s["findings"]:
+                    mres = _PORT_RE.search(f.detail)
+                    if not mres or not _is_open(f):
+                        continue
+                    if int(mres.group(1)) in gt.listening_ports:
+                        total_yield += weight
             return total_yield
-        r4 = round(yield_sum(aware) - yield_sum(blind) if blind else yield_sum(aware), 3)
 
-    r5 = None          # narrative quality: LLM-judged, opt-in (see --llm)
+        r4 = round(yield_sum(aware) - (yield_sum(blind) if blind else 0.0), 3)
+
+    # Narrative quality: judged by src/agents/eval_agent.py and passed in
+    # (scripts/eval_recon.py --audit); opt-in because it needs a judge.
+    r5 = narrative_quality
     r6 = None
     repeats = [s for s in aware if s.get("repeat_index", 0) > 0]
     if repeats:

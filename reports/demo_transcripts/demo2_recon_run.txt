@@ -1,0 +1,36 @@
+==============================================================================
+RECON AGENT — RAG-driven reconnaissance
+==============================================================================
+
+--- 10.0.1.5 ---
+  - [info] 10.0.1.5: recon context: Payment gateway (cardholder data processing)
+  - [port_filtered] 10.0.1.5: tcp/443 filtered/closed
+  - [port_filtered] 10.0.1.5: tcp/22 filtered/closed
+  - [port_filtered] 10.0.1.5: tcp/1433 filtered/closed
+  - [port_filtered] 10.0.1.5: tcp/3389 filtered/closed
+  - [port_filtered] 10.0.1.5: tcp/80 filtered/closed
+  - [port_filtered] 10.0.1.5: tcp/8443 filtered/closed
+
+--- 10.0.3.20 ---
+  - [info] 10.0.3.20: recon context: HR database (personnel records, payroll data)
+  - [port_filtered] 10.0.3.20: tcp/443 filtered/closed
+  - [port_filtered] 10.0.3.20: tcp/22 filtered/closed
+  - [port_filtered] 10.0.3.20: tcp/1433 filtered/closed
+  - [port_filtered] 10.0.3.20: tcp/3389 filtered/closed
+  - [port_filtered] 10.0.3.20: tcp/80 filtered/closed
+  - [port_filtered] 10.0.3.20: tcp/8443 filtered/closed
+
+--- 10.0.2.10 ---
+  - [info] 10.0.2.10: recon context: Internal wiki (Confluence instance)
+  - [port_filtered] 10.0.2.10: tcp/443 filtered/closed
+  - [port_filtered] 10.0.2.10: tcp/22 filtered/closed
+  - [port_filtered] 10.0.2.10: tcp/1433 filtered/closed
+  - [port_filtered] 10.0.2.10: tcp/3389 filtered/closed
+  - [port_filtered] 10.0.2.10: tcp/80 filtered/closed
+  - [port_filtered] 10.0.2.10: tcp/8443 filtered/closed
+
+------------------------------------------------------------------------------
+Intel report:  /Users/ak4za/Documents/FINAL_PROJECT/Context-aware-VAPT/data/intel/recon_findings_20260918_141000.md
+Chunks in RAG: 9
+Next run will retrieve these findings as organizational memory.
+==============================================================================

@@ -21,13 +21,19 @@ import argparse
 import json
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT.parent))
+sys.path.insert(0, str(PROJECT_ROOT))  # org_rag_phase1/ path-shim → this copy
 
 from org_rag_phase1.config import RECON_DEFAULT_TARGETS  # noqa: E402
+from org_rag_phase1.src.agents.eval_agent import (  # noqa: E402
+    ReconEvalAgent,
+    render_markdown,
+    report_text_from_snapshots,
+)
 from org_rag_phase1.src.eval import (  # noqa: E402
     ARM_AWARE,
     ARM_BLIND,
@@ -100,6 +106,12 @@ def main() -> int:
                     help="Write the full metrics JSON here (default: results/recon_eval_<ts>.json)")
     ap.add_argument("--numbered", action="store_true",
                     help="Key metrics by their metrics.md ids (A1, B2, R1, ...)")
+    ap.add_argument("--audit", action="store_true",
+                    help="Also run the Evaluation Agent (metrics.md §Q) and fill R5 "
+                         "with its narrative judgement")
+    ap.add_argument("--llm", action="store_true",
+                    help="Let the Evaluation Agent use the local LLM as narrative "
+                         "judge (falls back to the deterministic rubric)")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
@@ -115,17 +127,32 @@ def main() -> int:
     snapshots = _build_snapshots(aware_agent, blind_agent, targets, gt_map,
                                  probe=args.probe, publish=args.publish)
 
-    report = compute_metrics(snapshots, gt_map, numbered=args.numbered)
+    # Optional independent audit: it grades the same artifacts and supplies the
+    # R5 narrative rating, which no metric in this module can compute itself.
+    audit = None
+    narrative_quality = None
+    if args.audit:
+        evaluator = ReconEvalAgent(use_llm=args.llm)
+        narratives = {arm: report_text_from_snapshots(snapshots, arm)
+                      for arm in (ARM_AWARE, ARM_BLIND)}
+        audit = evaluator.audit(snapshots, gt_map=gt_map,
+                                allow_public=args.allow_public, narratives=narratives)
+        narrative_quality = audit.by_arm.get(ARM_AWARE, {}).get("Q7")
+        print(render_markdown(audit, title="EVALUATION AGENT AUDIT (metrics.md §Q)"))
+
+    report = compute_metrics(snapshots, gt_map, numbered=args.numbered,
+                             narrative_quality=narrative_quality)
 
     RESULTS_DIR.mkdir(exist_ok=True)
     out = args.out or RESULTS_DIR / f"recon_eval_{datetime.now():%Y%m%d_%H%M%S}.json"
     payload = {
-        "generated_utc": datetime.utcnow().isoformat(),
+        "generated_utc": datetime.now(timezone.utc).isoformat(),
         "targets": targets,
         "probe": args.probe,
         "ground_truth_file": args.ground_truth,
         "arms": [ARM_AWARE, ARM_BLIND],
         "metrics": report,
+        "audit": audit.to_dict() if audit else None,
     }
     Path(out).write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
 

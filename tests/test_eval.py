@@ -11,7 +11,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from org_rag_phase1.src.agents.recon import DEFAULT_PORTS, Finding, ReconAgent
+from org_rag_phase1.src.agents.recon import CANDIDATE_PORTS, DEFAULT_PORTS, Finding, ReconAgent
 from org_rag_phase1.src.eval import (
     CRITICALITY_WEIGHTS,
     GroundTruthTarget,
@@ -99,7 +99,10 @@ class TestSnapshotTarget:
         snap = snapshot_target(agent, "10.0.1.5", probe=False)
         assert snap["arm"] == "aware"
         assert snap["context_latency_ms"] > 0
-        assert len(snap["planned"]) == len(DEFAULT_PORTS)
+        # Plan stays inside the candidate universe and honours the HTTPS hint
+        # from the retrieved topology/policy (443 probed first).
+        assert set(snap["planned"]) <= set(CANDIDATE_PORTS)
+        assert snap["planned"][0] == 443
         assert snap["executed"] == []
         assert snap["findings"] == []
 
@@ -192,3 +195,76 @@ class TestMetricsAwareBlind:
             {}, numbered=True)
         assert "A1" in report and "R1" in report and "B2" in report
         assert "A2 correct_source_rate" not in report
+
+
+class TestMetricFixes:
+    """Regressions for the metrics fixes: FN semantics, crash-safety,
+    E-metric gate, R3/R4 pairing and true-finding yield."""
+
+    GT_LISTEN = {
+        "t1": GroundTruthTarget("t1", criticality="high", expert_ports=[443, 8443],
+                                listening_ports={443, 8443}),
+    }
+
+    def test_unprobed_listening_port_is_not_a_false_negative(self):
+        # 8443 is listening but was never probed: a planning miss (penalized by
+        # B2), not a probing error — C2/C4 must stay clean.
+        aware = _snapshot("aware", "t1", planned=[443], executed=[443],
+                          findings=[_finding("t1", 443, open_=True)])
+        report = compute_metrics([aware], self.GT_LISTEN)
+        assert report["C2 port_state_accuracy"] == 1.0
+        assert report["C4 false_closed_rate"] == 0.0
+
+    def test_probed_listening_port_missed_is_a_false_negative(self):
+        aware = _snapshot("aware", "t1", planned=[443], executed=[443],
+                          findings=[_finding("t1", 443)])  # listening, reported closed
+        report = compute_metrics([aware], self.GT_LISTEN)
+        assert report["C2 port_state_accuracy"] == 0.0
+        assert report["C4 false_closed_rate"] == 1.0
+
+    def test_missing_gt_target_does_not_crash(self):
+        aware = _snapshot("aware", "host-not-in-profile", planned=[22], executed=[22])
+        report = compute_metrics([aware], self.GT_LISTEN)
+        assert report["B2 plan_recall"] is None
+        assert report["C2 port_state_accuracy"] is None
+
+    def test_e_metrics_not_gated_on_first_snapshot(self):
+        s1 = _snapshot("aware", "t1", planned=[22])                     # not published
+        s2 = _snapshot("aware", "t2", planned=[22], published=True,
+                       publish={"report_path": "x"}, chunks_indexed=5,
+                       intel_retrievable=True)
+        report = compute_metrics([s1, s2], {})
+        assert report["E1 publish_success"] == 0.5
+        assert report["E2 intel_retrievability"] == 1.0
+        assert report["E4 index_growth_chunks"] == 5
+
+    def test_r4_counts_true_findings_not_any_open(self):
+        gt = {"t1": GroundTruthTarget("t1", criticality="high",
+                                      listening_ports=set())}  # nothing listening
+        false_open = _snapshot("aware", "t1", planned=[80], executed=[80],
+                               findings=[_finding("t1", 80, open_=True)])
+        report = compute_metrics([false_open], gt)
+        assert report["R4 risk_weighted_yield_delta"] == 0.0
+
+    def test_r3_paired_by_target_and_none_without_pairs(self):
+        gt = {"t1": GroundTruthTarget("t1", criticality="high", expert_ports=[443],
+                                      listening_ports=set())}
+        aware_t1 = _snapshot("aware", "t1", planned=[443, 8080, 8081])
+        blind_t1 = _snapshot("blind", "t1", planned=[443, 9090])
+        aware_only = _snapshot("aware", "t2", planned=[80])   # no GT, no blind partner
+        report = compute_metrics([aware_t1, aware_only, blind_t1], gt)
+        assert report["R3 wasted_probe_delta"] == -1.0        # 1 - 2, paired on t1 only
+
+        # Aware arm with no GT-matching targets at all: no pairs -> n/a, never 0.0
+        report = compute_metrics([aware_only], gt)
+        assert report["R3 wasted_probe_delta"] is None
+
+    def test_b4_pairs_arms_by_target(self):
+        aware = [_snapshot("aware", "tA", planned=[1]),
+                 _snapshot("aware", "tB", planned=[2]),
+                 _snapshot("aware", "tC", planned=[1])]
+        blind = [_snapshot("blind", "tC", planned=[9]),   # order deliberately shuffled
+                 _snapshot("blind", "tA", planned=[1]),
+                 _snapshot("blind", "tB", planned=[2])]
+        report = compute_metrics(aware + blind, {})
+        assert report["B4 context_sensitivity"] == 0.333   # only tC differs, paired by target

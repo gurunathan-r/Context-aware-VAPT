@@ -1,0 +1,18 @@
+
+===============================================================================================
+                      VAPT PRIORITIZATION: CONTEXT-BLIND vs. CONTEXT-AWARE
+===============================================================================================
+#   | VULN ID  | TARGET:PORT        | CVSS  | RAW SEVERITY || ADJUSTED RANK  | CONTEXT RISK  | STATUS         
+-----------------------------------------------------------------------------------------------
+1   | VULN-005 | 10.0.3.20:445      | 10.0  | CRITICAL     || #3 (▼ -2)      | 1.25          | 🔴 DEAD END     
+2   | VULN-003 | 10.0.1.5:8080      | 9.8   | CRITICAL     || #2 (=)         | 3.82          | 🔴 DEAD END     
+3   | VULN-001 | 10.0.2.10:80       | 9.8   | CRITICAL     || #5 (▼ -2)      | 0.39          | 🔴 DEAD END     
+4   | VULN-002 | 10.0.1.5:443       | 7.5   | HIGH         || #1 (▲ +3)      | 29.25         | 🟢 ACTIONABLE   
+5   | VULN-004 | 10.0.3.20:1433     | 6.5   | MEDIUM       || #4 (▲ +1)      | 0.81          | 🔴 DEAD END     
+===============================================================================================
+KEY DIFFERENCES DEMONSTRATED:
+  1. Dead-End Elimination : VULN-005 (CVSS 10.0) & VULN-003 (CVSS 9.8) are demoted due to firewall rule FW-014 / subnet isolation.
+  2. Business Escalation  : VULN-002 (Payment Gateway 443, CVSS 7.5) is promoted from #4 to #1 due to PCI-DSS & revenue impact.
+  3. Alert Fatigue Relief : VULN-001 (Wiki, CVSS 9.8) is demoted from #2 to #3 because it's a low-criticality internal asset.
+===============================================================================================
+

@@ -1,0 +1,45 @@
+==============================================================================
+QUERY:  What are the compliance requirements for payment systems?
+MODEL:  qwen3.6-35b-a3b-uncensored-hauhaucs-aggressive   fallback: False
+------------------------------------------------------------------------------
+[1] payment_policy.txt  type=policy  crit=high  comp=PCI-DSS  dist=0.3231
+[2] payment_policy.txt  type=policy  crit=high  comp=PCI-DSS  dist=0.3674
+[3] network_topology.txt  type=topology  crit=medium  comp=none  dist=0.5996
+------------------------------------------------------------------------------
+[ORG CONTEXT]
+Source: payment_policy.txt | Type: policy | Criticality: high
+Authority: mandatory | Compliance: PCI-DSS
+Payment Card Systems Security Policy — Finance Department
+
+Scope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.
+
+Compliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.
+
+Encryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.
+---
+Source: payment_policy.txt | Type: policy | Criticality: high
+Authority: mandatory | Compliance: PCI-DSS
+Encryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.
+
+Monitoring: All access to payment systems must be logged and reviewed. Log retention is 12 months. Alerts must fire on repeated failed logins and on any direct database connection from outside the payment network segment.
+
+Authority: This policy is mandatory for all business units. Exceptions require written approval from the CISO and the finance compliance officer, and must be reviewed quarterly.
+---
+Source: network_topology.txt | Type: topology | Criticality: medium
+Authority: advisory | Compliance: none
+Egress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.
+
+Implication for testing: any exploit path targeting the payment gateway must originate from the DMZ or the load balancer; lateral movement from the wiki server toward the payment network is expected to fail at rule FW-014.
+---
+[END ORG CONTEXT]
+------------------------------------------------------------------------------
+ANSWER:
+The compliance requirements for payment systems include:
+- Compliance with PCI-DSS (Payment Card Industry Data Security Standard) (source: payment_policy.txt).
+- Strong access control: segmentation of cardholder data environments from other networks, changing default passwords, and granting least-privilege access (source: payment_policy.txt).
+- Quarterly vulnerability scans for all in-scope systems, with critical findings remediated within 30 days (source: payment_policy.txt).
+- Encryption in transit using TLS 1.2 or higher and at rest using AES-256, with encryption keys rotated annually (source: payment_policy.txt).
+- All access logged and reviewed, with a 12-month log retention period; alerts required for repeated failed logins and direct database connections from outside the payment network segment (source: payment_policy.txt).
+- Direct internet egress blocked for the payment network, requiring outbound traffic to traverse the web proxy (source: network_topology.txt).
+- Exploit paths targeting the payment gateway must originate from the DMZ or load balancer, with lateral movement from the wiki server expected to fail at rule FW-014 (source: network_topology.txt).
+==============================================================================

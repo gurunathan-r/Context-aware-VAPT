@@ -23,6 +23,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT.parent))
+sys.path.insert(0, str(PROJECT_ROOT))  # org_rag_phase1/ path-shim → this copy
 
 from reportlab.lib import colors  # noqa: E402
 from reportlab.lib.enums import TA_CENTER  # noqa: E402

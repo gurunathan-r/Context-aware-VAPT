@@ -1,0 +1,42 @@
+==============================================================================
+QUERY:  What is the wifi password for the office guest network?
+MODEL:  qwen3.6-35b-a3b-uncensored-hauhaucs-aggressive   fallback: False
+------------------------------------------------------------------------------
+[1] network_topology.txt  type=topology  crit=medium  comp=none  dist=0.7668
+[2] payment_policy.txt  type=policy  crit=high  comp=PCI-DSS  dist=0.8133
+[3] network_topology.txt  type=topology  crit=medium  comp=none  dist=0.8199
+------------------------------------------------------------------------------
+[ORG CONTEXT]
+Source: network_topology.txt | Type: topology | Criticality: medium
+Authority: advisory | Compliance: none
+Network Topology and Firewall Policy — Engineering
+
+Segments: The corporate network is divided into a DMZ (192.168.10.0/24), the payment network (10.0.1.0/24), general internal segments (10.0.2.0/24, 10.0.3.0/24), and a management VLAN (10.0.9.0/24).
+
+Firewall rules: The payment gateway 10.0.1.5 is only reachable from the DMZ, not from the internal network. Traffic from internal segments to 10.0.1.5 is denied by rule FW-014. Only HTTPS (tcp/443) is permitted from the DMZ load balancer to 10.0.1.5.
+
+The internal wiki 10.0.2.10 is reachable from all internal segments but not from the DMZ or the internet. The HR database 10.0.3.20 is reachable only from the HR subnet and the management VLAN; all other access is denied.
+
+Egress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.
+---
+Source: payment_policy.txt | Type: policy | Criticality: high
+Authority: mandatory | Compliance: PCI-DSS
+Payment Card Systems Security Policy — Finance Department
+
+Scope: This policy applies to every system that stores, processes, or transmits cardholder data, including the payment gateway at 10.0.1.5, the point-of-sale integration service, and any supporting middleware.
+
+Compliance requirements: All payment systems must comply with PCI-DSS (Payment Card Industry Data Security Standard). PCI-DSS requires strong access control: cardholder data environments must be segmented from other networks, default passwords must be changed, and access must be granted on a least-privilege basis. Quarterly vulnerability scans are mandatory for all in-scope payment systems, and remediation of critical findings must be completed within 30 days.
+
+Encryption: Cardholder data must be encrypted in transit using TLS 1.2 or higher and at rest using AES-256. Encryption keys must be rotated at least annually.
+---
+Source: network_topology.txt | Type: topology | Criticality: medium
+Authority: advisory | Compliance: none
+Egress: Direct internet egress is blocked for the payment network and the HR subnet. All outbound traffic must traverse the web proxy for logging.
+
+Implication for testing: any exploit path targeting the payment gateway must originate from the DMZ or the load balancer; lateral movement from the wiki server toward the payment network is expected to fail at rule FW-014.
+---
+[END ORG CONTEXT]
+------------------------------------------------------------------------------
+ANSWER:
+I don't know — the organizational documents provided do not cover this.
+==============================================================================

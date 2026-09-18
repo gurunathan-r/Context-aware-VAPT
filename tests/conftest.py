@@ -18,13 +18,18 @@ from pathlib import Path
 
 import pytest
 
-# Make the org_rag_phase1 package importable: tests/ lives inside it, so the
-# package root is tests/.. and the repo root is tests/../..
+# Make the org_rag_phase1 package importable. tests/ lives two levels below the
+# project root, and the project root holds the tracked path-shim package
+# org_rag_phase1/ that maps org_rag_phase1.* onto this copy of the source tree.
+# PROJECT_ROOT must come FIRST on sys.path: its parent may hold a sibling
+# checkout that is also named org_rag_phase1 and would otherwise win.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = PROJECT_ROOT.parent
-for p in (str(PROJECT_ROOT), str(REPO_ROOT)):
-    if p not in sys.path:
-        sys.path.insert(0, p)
+for p in (str(REPO_ROOT), str(PROJECT_ROOT)):
+    if p in sys.path:
+        sys.path.remove(p)
+    sys.path.insert(0, p)
+assert sys.path[0] == str(PROJECT_ROOT)  # shim beats any sibling org_rag_phase1/
 
 
 @pytest.fixture(scope="session")

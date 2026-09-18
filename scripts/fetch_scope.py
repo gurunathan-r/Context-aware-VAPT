@@ -20,6 +20,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT.parent))
+sys.path.insert(0, str(PROJECT_ROOT))  # org_rag_phase1/ path-shim → this copy
 
 from org_rag_phase1.config import SECURITY_TXT_TIMEOUT  # noqa: E402
 

@@ -27,10 +27,12 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Add repo root to sys.path
+# Add repo root to sys.path. PROJECT_ROOT is inserted last so it has the
+# highest priority: its org_rag_phase1/ path-shim must win over a sibling
+# checkout that is also named org_rag_phase1.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT.parent))
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from org_rag_phase1.config import (
     LLM_API_KEY,

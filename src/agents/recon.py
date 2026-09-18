@@ -50,6 +50,23 @@ logger = logging.getLogger(__name__)
 # Ports probed by default, chosen for a VAPT testbed, not a broad scan.
 DEFAULT_PORTS = (22, 80, 443, 3389, 8443)
 
+# Candidate port universe: every port the planner may ever plan and the probe
+# budget the auditor enforces. Hint-driven planning *reorders and adds* ports
+# from this set (e.g. tcp/1433 for a database host), so the budget is defined
+# as membership here — not as "at most len(DEFAULT_PORTS)".
+CANDIDATE_PORTS: tuple[int, ...] = DEFAULT_PORTS + (1433,)
+
+# Port hints the planner reads out of retrieved organizational context, shared
+# with the Evaluation Agent (Q2 re-derives hints from the same table) so the
+# planner and its auditor can never drift apart. First matching keyword wins
+# per entry; multiple entries may fire.
+PORT_HINT_RULES: tuple[tuple[tuple[str, ...], int], ...] = (
+    (("https", "443"), 443),
+    (("ssh", "22"), 22),
+    (("database", "sql"), 1433),   # MSSQL — the testbed HR database is Windows
+    (("database", "sql"), 3389),   # RDP on the same Windows DB host
+)
+
 # Private ranges (RFC1918 + loopback + documentation ranges). Recon targets
 # must resolve into one of these unless explicitly overridden.
 _PRIVATE_NETS = tuple(
@@ -187,25 +204,22 @@ def plan_probes(context_results: list[dict[str, Any]], ports: tuple[int, ...] = 
     """Choose probe ports from retrieved organizational context.
 
     Rule-based Phase 2 starter: the topology/policy chunks are searched for
-    hints (HTTPS-only, tcp/443 mentions, DB references); matched ports are
-    probed first. Falls back to DEFAULT_PORTS. An LLM-driven planner can
-    replace this later without changing the agent contract.
+    hints (HTTPS-only, tcp/443 mentions, DB references) via ``PORT_HINT_RULES``;
+    matched ports are probed first. Falls back to DEFAULT_PORTS. An LLM-driven
+    planner can replace this later without changing the agent contract.
 
     Args:
         context_results: Chunks retrieved from the RAG about the target.
         ports: Candidate ports.
 
     Returns:
-        Ordered list of ports to probe (deduplicated).
+        Ordered list of ports to probe (deduplicated, ⊆ CANDIDATE_PORTS).
     """
     text = "\n".join(str(r.get("chunk_text", "")) for r in context_results).lower()
     ordered: list[int] = []
-    if "https" in text or "443" in text:
-        ordered.append(443)
-    if "ssh" in text or "22" in text:
-        ordered.append(22)
-    if "database" in text or "sql" in text:
-        ordered.append(3389)
+    for keywords, port in PORT_HINT_RULES:
+        if port not in ordered and any(k in text for k in keywords):
+            ordered.append(port)
     for p in ports:
         if p not in ordered:
             ordered.append(p)
@@ -347,6 +361,12 @@ class ReconAgent:
                         (c.get("business_unit") for c in flat
                          if c.get("source_type") == "asset"), "unknown"),
                     "context_chunks": len(flat),
+                    # Provenance for every context-derived claim above: the exact
+                    # documents the RAG returned for this target. Keeps the
+                    # finding auditable without re-running the retrieval, and is
+                    # what the Evaluation Agent's Q1 check verifies.
+                    "sources": sorted({c.get("source_file") for c in flat
+                                       if c.get("source_file")}),
                 },
             )
         ]

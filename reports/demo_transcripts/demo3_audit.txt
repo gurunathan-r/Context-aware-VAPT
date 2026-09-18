@@ -1,0 +1,23 @@
+========================================================================
+EVALUATION AGENT — Q METRIC SCORES (0-1)
+========================================================================
+                        Q1:  1.000
+                        Q2:  1.000
+                        Q3:  1.000
+                        Q4:  n/a
+                        Q5:  1.000
+                        Q6:  1.000
+                        Q7:  0.800
+                        Q8:  1.000
+========================================================================
+
+ aware arm: Q1=1.00, Q2=1.00, Q3=1.00, Q4=n/a, Q5=1.00, Q6=1.00, Q7=0.80, Q8=1.00
+ blind arm: Q1=n/a, Q2=1.00, Q3=1.00, Q4=n/a, Q5=1.00, Q6=0.67, Q7=0.80, Q8=0.00
+
+VERDICT: PASS  |  grade A  |  quality score 98.1/100
+
+All applicable checks passed in the aware arm.
+4 expected control-arm difference(s) (context-blind baseline) — see the markdown report.
+
+Audit JSON: /tmp/demo_audit_capture
+Audit report: /Users/ak4za/Documents/FINAL_PROJECT/Context-aware-VAPT/results/recon_audit_20260918_194301.md
